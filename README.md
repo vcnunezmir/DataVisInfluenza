@@ -12,6 +12,7 @@ Jacob Moon:
 Virginia Nunez Mir:
 	Email: vcnunez@wpi.edu
 	Github id: vcnunezmir
+	
 GitHub repo: https://github.com/vcnunezmir/DataVisInfluenza
 	
 Background and Motivation. Discuss your motivations and reasons for choosing this project, especially any background or research interests that may have influenced your decision.
@@ -20,26 +21,26 @@ We are both bioinformatic students, so we knew we wanted to work on something bi
 
 Project Objectives. Provide the primary questions you are trying to answer with your visualization. What would you like to learn and accomplish? List the benefits.
 
-	What are the connections between the locations of certain birds known to transmit influenza, and known human influenza patients?
-	Are there any noticeable connections between strains and their characteristics?
-	Are there any noticeable connections between the spread of influenza and the characteristics of the spreading strains?
+What are the connections between the locations of certain birds known to transmit influenza, and known human influenza patients?
+Are there any noticeable connections between strains and their characteristics?
+Are there any noticeable connections between the spread of influenza and the characteristics of the spreading strains?
 
 Data. From where and how are you collecting your data? If appropriate, provide a link to your data sources.
 
 Datasets: https://www.fludb.org/brc/search_landing.spg?decorator=influenza 
 
-	Most, if not all of our data is going to come from the Influenza Research Database. The page includes many different datasets, including animal surveillance data, data on influenza strains, and data on human isolates of the influenza virus. Our visualizations will be composed of combinations of the different datasets found in this site. For example, one of the graphs might use just the information from the human isolates dataset, comparing one attribute to another. A different graph might compare one attribute from the human isolates to the same attribute in the animal surveillance dataset. Yet another graph could compare attributes from the human isolate dataset, such as strain, to information obtained about the strain from the strain dataset.
+Most, if not all of our data is going to come from the Influenza Research Database. The page includes many different datasets, including animal surveillance data, data on influenza strains, and data on human isolates of the influenza virus. Our visualizations will be composed of combinations of the different datasets found in this site. For example, one of the graphs might use just the information from the human isolates dataset, comparing one attribute to another. A different graph might compare one attribute from the human isolates to the same attribute in the animal surveillance dataset. Yet another graph could compare attributes from the human isolate dataset, such as strain, to information obtained about the strain from the strain dataset.
   
 Mapping the states: http://eric.clst.org/Stuff/USGeoJSON 
 
-	This is a GeoJSON file for constructing a map of the Us with all of the States in it. It will also be used to create a projection of all latitudes and longitudes on the SVG, this will then be used to incorporate cities into our mapping. 
+This is a GeoJSON file for constructing a map of the Us with all of the States in it. It will also be used to create a projection of all latitudes and longitudes on the SVG, this will then be used to incorporate cities into our mapping. 
   
 Mapping the cities: https://www.maxmind.com/en/free-world-cities-database
 
-	This is a csv of city names, populations, latitudes, and longitudes. This data will be used to put the cities onto our map projection. 
+This is a csv of city names, populations, latitudes, and longitudes. This data will be used to put the cities onto our map projection. 
 Data Processing. Do you expect to do substantial data cleanup? What quantities do you plan to derive from your data? How will data processing be implemented?
 
-	Due to all of our data being spread across different datasets, a necessary aspect of our project will be to sift through all of the different datasets and compile the important information from each. There probably will not be any calculations involved during data processing, considering most of the data we are interesting is qualitative and categorical. However, any calculations will probably be made in excel before importing the file into d3.
+Due to all of our data being spread across different datasets, a necessary aspect of our project will be to sift through all of the different datasets and compile the important information from each. There probably will not be any calculations involved during data processing, considering most of the data we are interesting is qualitative and categorical. However, any calculations will probably be made in excel before importing the file into d3.
   
 Visualization Design. How will you display your data? Provide some general ideas that you have for the visualization design. Develop three alternative prototype designs for your visualization. Create one final design that incorporates the best of your three designs. Describe your designs and justify your choices of visual encodings. We recommend you use the Five Design Sheet Methodology.
 This is the organization of the visualization page of our program. It will feature 5 major visualizations which will each be covered below. Each graphic will have it’s own SVBG container and may be linked with the other graphics, to work together. 
