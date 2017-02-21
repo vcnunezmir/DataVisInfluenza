@@ -1,1 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Assignment 4</title>
+	<script src='https://d3js.org/d3.v4.min.js'></script>
+</head>
+ 
+<body>
+
+	<script>
+
+d3.csv('avianData.csv', function(error,avianData){	
+d3.csv('humanData.csv', function (error,humanData){
+
+
+avianData.forEach(function(d) {
+        d.CollectionDate = d.CollectionDate.split("/");
+		d.CollectionDate = d.CollectionDate[2].concat(d.CollectionDate[1]).concat(d.CollectionDate[0]);
+		d.CollectionDate = +d.CollectionDate;
+    })
+humanData.forEach(function(d) {
+		d.Age = d.Age.split(",");
+		d.Age = d.Age[0];
+		
+		d.CollectionDate = d.CollectionDate.split(",");
+		d.CollectionDate = d.CollectionDate[0];
+		d.CollectionDate = d.CollectionDate.split("/");
+		d.CollectionDate = d.CollectionDate[2].concat(d.CollectionDate[1]).concat(d.CollectionDate[0]);
+		d.CollectionDate = +d.CollectionDate;
+		
+		if (d.Temperature == "-N/A-") {
+			d.Temperature = "0"
+			}
+		d.Temperature = +d.Temperature;
+		
+		if (d.isVaccinated == "1" || d.isVaccinated == "Yes" || d.isVaccinated == "Y") {
+			d.isVaccinated = "Y"
+			}else {d.isVaccinated = "N"}
+		
+		if (d.Fever == "1" || d.Fever == "Yes" || d.Fever == "Y") {
+			d.Fever = "Y"
+			}else {d.Fever = "N"}
+			
+		d.Symptoms = d.Symptoms.split(",")
+})
+
+//svg container				
+	var SVG = d3.select('body')
+		.append('svg')
+		.attr('width', 1000)
+		.attr('height', 1000);
+		
+var addTXT = function(current){
+	SVG.selectAll("text").remove()
+
+	SVG.append("text")						
+			.attr("x", 450)
+			.attr("y", 950)
+			.text("1")
+			.attr("font-size", "30px")
+			.attr("fill", function () {
+				if (current == 1) {
+				return "black"
+				} else {
+				return "blue"
+					}
+			})
+			.on("click", function(){
+			if (current == 1) {
+			}else {
+			dispatch.call('page1',this,1)
+				}
+			});
+	
+	SVG.append("text")						
+			.attr("x", 500)
+			.attr("y", 950)
+			.text("2")
+			.attr("font-size", "30px")
+			.attr("fill", function () {
+				if (current == 2) {
+				return "black"
+				} else {
+				return "blue"
+					}
+			})
+			.on("click", function(){
+			if (current == 2) {
+				}else {
+			dispatch.call('page2',this,2)
+				}
+			});
+			
+	SVG.append("text")						
+			.attr("x", 550)
+			.attr("y", 950)
+			.text("3")
+			.attr("font-size", "30px")
+			.attr("fill", function () {
+				if (current == 3) {
+				return "black"
+				} else {
+				return "blue"
+					}
+			})
+			.on("click", function(){
+			if (current == 3) {
+			}else {
+			dispatch.call('page3',this,3)	
+				}
+			});
+	}
+	
+addTXT(1);
+
+
+
+var dispatch = d3.dispatch('page1', 'page2','page3');
+
+dispatch.on('page1', function(current){
+	console.log('called page1') 
+	addTXT(current)
+	})
+
+dispatch.on('page2', function(current){
+	console.log('called page2') 
+	addTXT(current)
+	})
+	
+dispatch.on('page3.graph1', function(current){
+	console.log('called g1') 
+	addTXT(current)
+	})
+dispatch.on('page3.graph2', function(current){
+	console.log('called g2') 
+	addTXT(current)
+	})
+dispatch.on('page3.graph3', function(current){
+	console.log('called g3') 
+	addTXT(current)
+	})
+dispatch.on('page3.graph4', function(current){
+	console.log('called g4')
+	addTXT(current) 
+	})
+dispatch.on('page3.graph5', function(current){
+	console.log('called g4')
+	addTXT(current)
+	})
+	
+})
+})
+
+	</script>
+</body>
+
+</html>
+
 
