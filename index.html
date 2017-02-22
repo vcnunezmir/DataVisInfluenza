@@ -179,6 +179,107 @@ var graph5Stats = function (d) {
 
 }
 
+//Graph 2: Quantity of Infections
+
+var graph2a = SVG.append("g");
+var graph2b = SVG.append("g");
+//Scales for line graph
+	//For line chart
+	var xScale3 = d3.scaleLinear()
+		.domain([20120000,20169999])
+		.range([0,1000]);
+	var yScale3 = d3.scaleLinear()
+		.domain([0,100])
+		.range([500,1]);
+
+	var line1 = d3.line()
+		.x(function(d) { 
+			return xScale3(d.CollectionDate); 
+			})
+		.y(function(d) { 
+			return yScale3(d.Age); 
+			})
+		
+		
+	var line2 = d3.line()
+		.x(function(d) { 
+			return xScale3(d.CollectionDate); 
+			})
+		.y(function(d) { 
+			return yScale3(d.Temperature); 
+			})
+			
+		graph2a.append('path')
+		.datum(humanData)
+		.attr('d', line1)
+		.attr('transform','translate(1000000,200)')
+		.attr('fill','none')
+		.attr('stroke','red')
+		.attr('stroke-width',2)
+		
+		graph2b.append('path')
+		.datum(humanData)
+		.attr('d', line2)
+		.attr('transform','translate(10000000,200)')
+		.attr('fill','none')
+		.attr('stroke','black')
+		.attr('stroke-width',2)
+		
+		
+		graph2a.selectAll('lineChart')
+		.data(humanData)
+        .enter()
+		.append('circle')
+        .attr('transform','translate(100000,200)')
+        .attr('cy',function (d) {
+                    return yScale3(d.Age);
+                    })
+        .attr('cx',function (d) {
+                    return xScale3(d.CollectionDate);
+                    })
+		.attr('r',4)		
+        .attr('fill', 'green')
+		.on("click", function(d){
+			var v = d.Age
+			dispatch.call('page3',this,v)
+			graph2a.selectAll('circle')
+			.transition()
+      .attr('fill','black')
+			.attr('r',4)
+			d3.select(this)
+			.transition()
+      .attr('fill','red')
+			.attr('r',8)
+			})
+			
+		graph2b.selectAll('lineChart')
+		.data(humanData)
+        .enter()
+		.append('circle')
+        .attr('transform','translate(1000000,200)')
+        .attr('cy',function (d) {
+                    return yScale3(d.Temperature);
+                    })
+        .attr('cx',function (d) {
+                    return xScale3(d.CollectionDate);
+                    })
+		.attr('r',4)		
+        .attr('fill', 'purple')
+		.on("click", function(d){
+			var v = d.Age
+			dispatch.call('page3',this,v)
+			graph2b.selectAll('circle')
+			.transition()
+      .attr('fill','black')
+			.attr('r',4)
+			d3.select(this)
+			.transition()
+      .attr('fill','red')
+			.attr('r',8)
+			})
+
+
+
 //Graph 3: Percent Infected compared to Symptomatic Infection
 
 var graph3a = SVG.append("g");
@@ -397,7 +498,39 @@ dispatch.on('page3.graph1', function(current){
 	
 //Graph 2: Quantity of Infections
 dispatch.on('page3.graph2', function(current){
-	console.log('called g2') 
+	
+	graph2a.selectAll('path')
+		.datum(humanData)
+		.attr('transform','translate(500,100)')	
+		.transition()
+		.attr('d', line1)
+		
+	graph2b.selectAll('path')
+		.datum(humanData)
+		.attr('transform','translate(500,100)')	
+		.transition()
+		.attr('d', line2)
+		
+	graph2a.selectAll('circle')
+		.data(humanData)
+		.attr('transform','translate(500,100)')
+		.transition()
+        .attr('cy',function (d) {
+                    return yScale3(d.Age);
+                    })
+		.attr('r',4)		
+        .attr('fill', 'green')
+		
+	graph2b.selectAll('circle')
+		.data(humanData)
+		.attr('transform','translate(500,100)')
+		.transition()
+        .attr('cy',function (d) {
+                    return yScale3(d.Temperature);
+                    })
+		.attr('r',4)		
+        .attr('fill', 'purple')
+	
 	addTXT(current)
 	})
 	
