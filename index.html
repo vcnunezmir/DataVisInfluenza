@@ -43,7 +43,40 @@ humanData.forEach(function(d) {
 			}else {d.Fever = "N"}
 			
 		d.Symptoms = d.Symptoms.split(",")
+		
+		d.Subtype = d.Subtype.split(",");
+		d.Subtype = d.Subtype[0];
+		if (d.Subtype == "-N/A-" || d.Subtype == "unknown"){
+			d.Subtype = "-N/A-"
+			}
 })
+
+
+var ageCohorts = [
+	{Index: '0',  Age: 'Under 5' , Percent: '0.0654304581399327 '} 
+	{Index: '1',  Age: '5 to 9' , Percent: '0.065907533860457 '} 
+	{Index: '2',  Age: '10 to 14' , Percent: '0.0669716366880742 '} 
+	{Index: '3',  Age: '15 to 19' , Percent: '0.0713867579844992 '} 
+	{Index: '4',  Age: '20 to 24' , Percent: '0.0699151772033059 '} 
+	{Index: '5',  Age: '25 to 29' , Percent: '0.0683470573751255 '} 
+	{Index: '6',  Age: '30 to 34' , Percent: '0.0646555060497749 '} 
+	{Index: '7',  Age: '35 to 39' , Percent: '0.065360108945121 '} 
+	{Index: '8',  Age: '40 to 44' , Percent: '0.067664019163898 '} 
+	{Index: '9',  Age: '45 to 49' , Percent: '0.0735511552558858 '} 
+	{Index: '10',  Age: '50 to 54' , Percent: '0.0722216915082996 '} 
+	{Index: '11',  Age: '55 to 59' , Percent: '0.0636925965874202 '} 
+	{Index: '12',  Age: '60 to 64' , Percent: '0.0544717961235767 '} 
+	{Index: '13',  Age: '65 to 69' , Percent: '0.0402767375378231 '} 
+	{Index: '14',  Age: '70 to 74' , Percent: '0.0300511743751905 '} 
+	{Index: '15',  Age: '75 to 79' , Percent: '0.0237017028566742 '} 
+	{Index: '16',  Age: '80 to 84' , Percent: '0.0186021376606907 '} 
+	{Index: '17',  Age: '85 to 89' , Percent: '0.0117263524631083 '} 
+	{Index: '18',  Age: '90 to 94' , Percent: '0.00469113176301191 '} 
+	{Index: '19',  Age: '95 to 99' , Percent: '0.00120242709386135 '} 
+	{Index: '20',  Age: '100+' , Percent: '0.000172841364269368 '}  ];
+	
+var predictedStrains = [“H1N1” ,”H3N2”]; 
+
 
 //svg container				
 	var SVG = d3.select('body')
@@ -114,7 +147,143 @@ var addTXT = function(current){
 	
 addTXT(1);
 
+var graph5Stats = function (d) {
+	strainsVisited = [];
+	strainData = [];
+	
+	for (i=0;i<d.length;i++){
+		if (strainsVisited.includes(d[i].Subtype)) {
+			var b = 0 //switch
+			var t = 0 //loop index
+			while (b == 0){
+				if (strainData[t].Strain == d[i].Subtype) {
+						strainData[t] = {Strain: d[i].Subtype, Count:(strainData[t].Count + 1)}
+						b = 1
+				} else {t = t+1}}
+		}else {
+			strainData.push({Strain: d[i].Subtype,Count:1})
+			strainsVisited.push(d[i].Subtype);
+			}
+	}
+	strainData.sort(function(a, b) {
+    return a.Strain - b.Strain;
+	});
+	
+	for (i=0;i<strainData.length;i++){
+		strainData[i] = {Index: i , Strain: strainData[i].Strain, Count: strainData[i].Count}
+		}
+	
+	
+	return strainData;
 
+}
+
+//Graph 4: Percent of Infected over Age
+var graph4 = SVG.append("g");
+
+//Scales for line graph
+	//For line chart
+	var xScaleL = d3.scaleLinear()
+		.domain([0,25])
+		.range([0,1000]);
+	var yScaleL = d3.scaleLinear()
+		.domain([min,max])
+		.range([500,1]);
+
+  var line = d3.line()
+		.x(function(d) { 
+			return xScaleL(d.AgeGroup); 
+			})
+		.y(function(d) { 
+			return yScaleL(d.Value); 
+			})
+
+
+		SVGLG.selectAll('path').remove()
+		
+		SVGLG.append('path')
+		.datum(data)
+		.attr('d', line)
+		.attr('transform','translate(120,100)')
+		.attr('fill','none')
+		.attr('stroke','black')
+		.attr('stroke-width',2)
+		
+		SVGLG.selectAll('ellipse').remove()
+		
+		SVGLG.selectAll('lineChart')
+		.data(data)
+        .enter()
+		.append('ellipse')
+        .attr('transform','translate(120,100)')
+        .attr('cy',function (d) {
+                    return yScaleL(d.Value);
+                    })
+        .attr('cx',function (d) {
+                    return xScaleL(d.Index);
+                    })
+		.attr('ry',4)
+        .attr('rx',4)			
+        .attr('fill', 'black')
+			.on("click", function(d){
+			var v = d.Year
+			var c = "Year"
+			addTXT(v,c)
+			dispatch.call('line',this,v)
+			SVGLG.selectAll('ellipse')
+			.transition()
+      .attr('fill','black')
+			.attr('rx',4)
+			d3.select(this)
+			.transition()
+      .attr('fill','red')
+			.attr('rx',8)
+
+
+//Graph 5: Infections by Strain
+var graph5 = SVG.append("g");
+
+var barDataset = graph5Stats(humanData)
+
+	var xScale5 = d3.scaleLinear()
+		.domain([0,barDataset.length-1])
+		.range([0,500]);
+	var yScale5 = d3.scaleLinear()
+		.domain([1,400])
+		.range([200,1]);
+	
+	graph5.selectAll("bar")
+		.data(barDataset)
+		.enter()
+		.append('rect')
+		.attr('transform','translate(10200,70)')
+		.attr('x', function (d) { 
+					return xScale5(d.Index);
+					})
+		.attr('y', function (d) { 
+					return yScale5(d.Count);
+					})
+		.attr('width', 20)
+		.attr('height', function (d) { 
+					return 201 - yScale5(d.Count);
+					})
+		.attr('fill','black')
+		.attr('stroke','red')
+		.on("click", function(d){
+			//var v = d.State
+			//var c = "State"
+			//addTXT(v,c)
+			//dispatch.call('bar',this,v)
+			//SVGBG.selectAll('rect')
+			//.transition()
+     // .attr('fill','black')
+			//.style('opacity',0.5)
+			//d3.select(this)
+			//.transition()
+      //.attr('fill','red')
+			//.style('opacity',1)
+		})
+	
 
 var dispatch = d3.dispatch('page1', 'page2','page3');
 
@@ -140,12 +309,29 @@ dispatch.on('page3.graph3', function(current){
 	console.log('called g3') 
 	addTXT(current)
 	})
+	
+//Graph 4: Percent of Infected over Age
 dispatch.on('page3.graph4', function(current){
 	console.log('called g4')
 	addTXT(current) 
 	})
+	
+//Graph 5: Infections by Strain	
 dispatch.on('page3.graph5', function(current){
-	console.log('called g4')
+
+var dataset = graph5Stats(humanData)
+
+	graph5.selectAll("rect")
+		.data(dataset)
+		.transition()
+		.attr('transform','translate(200,70)')
+		.attr('y', function (d) { 
+					return yScale(d.Count);
+					})
+		.attr('height', function (d) { 
+					return 201 - yScale(d.Count);
+					})
+	
 	addTXT(current)
 	})
 	
