@@ -43,13 +43,14 @@ humanData.forEach(function(d) {
 			}else {d.Fever = "N"}
 			
 		d.Symptoms = d.Symptoms.split(",")
-		
+		console.log(d.Symptoms)
 		d.Subtype = d.Subtype.split(",");
 		d.Subtype = d.Subtype[0];
 		if (d.Subtype == "-N/A-" || d.Subtype == "unknown"){
 			d.Subtype = "-N/A-"
 			}
 })
+
 
 
 var ageCohorts = [
@@ -87,6 +88,13 @@ var predictedStrains = ["H1N1" ,"H3N2"];
 		
 var addTXT = function(current){
 	SVG.selectAll("text").remove()
+	
+	SVG.append("text")
+			.attr("x", 370)
+			.attr("y", 950)
+			.text("Page: ")
+			.attr("font-size", "30px")
+			.attr("fill","black")
 
 	SVG.append("text")						
 			.attr("x", 450)
