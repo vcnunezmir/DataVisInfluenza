@@ -18,6 +18,7 @@ avianData.forEach(function(d) {
         d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = d.CollectionDate[2].concat(d.CollectionDate[1]).concat(d.CollectionDate[0]);
 		d.CollectionDate = +d.CollectionDate;
+		d.endDate = d.CollectionDate + 14;
     })
 humanData.forEach(function(d) {
 		d.Age = d.Age.split(",");
@@ -28,7 +29,9 @@ humanData.forEach(function(d) {
 		d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = d.CollectionDate[2].concat(d.CollectionDate[1]).concat(d.CollectionDate[0]);
 		d.CollectionDate = +d.CollectionDate;
-		
+		if ((d.Age >= 65) || (d.Age <= 10)){
+    			d.endDate = d.CollectionDate + 14;
+  		 } else {d.endDate = d.CollectionDate + 7; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              		
 		if (d.Temperature == "-N/A-") {
 			d.Temperature = "0"
 			}
@@ -43,14 +46,40 @@ humanData.forEach(function(d) {
 			}else {d.Fever = "N"}
 			
 		d.Symptoms = d.Symptoms.split(",")
-		console.log(d.Symptoms)
+	        if (d.Temperature > 99) {
+    			var i = 0
+      			var counter = 1
+      			var k = d.Symptoms.length
+      			for(i;i<k;i++){
+      				var currentSymptom = d.Symptoms[i]
+        			if(currentSymptom.includes("cough")){
+        			  var currentArray = [];
+				  currentArray = currentSymptom.split('(');
+				  currentArray[2].strip("(",")"," ")
+				  if ((currentArray[2].includes("Y") || currentArray[2].includes("M")) || currentArray[2].includes("4") {
+          				counter = counter +1 
+         			   }
+       				 } 
+        			if(currentSymptom.includes("myalgia")){
+        			  var currentArray = [];
+				  currentArray = currentSymptom.split('(');
+				  currentArray[2].strip("(",")"," ")
+				  if ((currentArray[2].includes("Y") || currentArray[2].includes("M")) || currentArray[2].includes("4") {
+          				counter = counter +1 
+         			   }
+       				 } 
+				 if (counter == 3) { d.Symptoms = 1; i = k; }
+			} 
+			if (counter<3) {
+				d.Symptoms = 0; 
+			}
+    		}
 		d.Subtype = d.Subtype.split(",");
 		d.Subtype = d.Subtype[0];
 		if (d.Subtype == "-N/A-" || d.Subtype == "unknown"){
 			d.Subtype = "-N/A-"
 			}
 })
-
 
 
 var ageCohorts = [
@@ -78,7 +107,151 @@ var ageCohorts = [
 	
 	
 var predictedStrains = ["H1N1" ,"H3N2"]; 
+// Filters
+// state filter 
+dispatch.on('one', function(State) { 
+		this.State = State
 
+        var i = 0; 
+        var k = humanData.length;
+		
+        var newDataset = []; //Our filtered dataset
+		
+        for(i; i<k; i++) {
+            var currentState = humanData[i].State;
+            if (currentState == State) {
+            	newDataset.push(humanData[i]);
+				}
+			}
+	//Stats for other graphics
+	var newTwoData = graph2Stats(newDataset);
+	var newThreeData = threeStats(newDataset);
+  var newFourData = fourStats(newDataset);
+  var newFiveData = fiveStats(newDataset);
+	//Update graphics 
+	updateTwo(newTwoData);
+  updateThree(newThreeData);
+  updateFour(newFourData);
+  updateFive(newFiveData);
+
+	})
+ 
+//  sex Filter 
+dispatch.on('sexButton', function(Sex) { 
+		this.Sex = Sex
+
+        var i = 0; 
+        var k = humanData.length;
+		
+        var newDataset = []; //Our filtered dataset
+		
+        for(i; i<k; i++) {
+            var currentSex = humanData[i].Sex;
+            if (currentSex == Sex) {
+            	newDataset.push(humanData[i]);
+				}
+			}
+	//Stats for other graphics
+  var newOneData = oneStats(newDataset);
+	var newTwoData = graph2Stats(newDataset);
+	var newThreeData = threeStats(newDataset);
+  var newFourData = fourStats(newDataset);
+  var newFiveData = fiveStats(newDataset);
+	//Update graphics 
+  updateOne(newOneData);
+	updateTwo(newTwoData);
+  updateThree(newThreeData);
+  updateFour(newFourData);
+  updateFive(newFiveData);
+
+	})  
+  
+ // Symptom filter   for this to work we will need to determine if they have symptoms earlier and set it to a boolean <- 1 is symptotmatic
+dispatch.on('three', function() { 
+        var i = 0; 
+        var k = humanData.length;
+		
+        var newDataset = []; //Our filtered dataset
+		
+        for(i; i<k; i++) {
+            var currentSymptoms = humanData[i].Symptoms;
+            if (currentSymptoms == 1) {
+            	newDataset.push(humanData[i]);
+				}
+			}
+	//Stats for other graphics
+	var newOneData = oneStats(newDataset);
+  var newTwoData = graph2Stats(newDataset);
+  var newFourData = fourStats(newDataset);
+  var newFiveData = fiveStats(newDataset);
+	//Update graphics 
+  updateOne(newOneData);
+	updateTwo(newTwoData);
+  updateFour(newFourData);
+  updateFive(newFiveData);
+
+	})
+  
+  
+  
+  // age filter 
+dispatch.on('four', function(ageIndex) { // can use age index  
+		this.Index = ageIndex;
+    		var minAge = ageIndex*5;
+        var maxAge = minAge + 4; 
+        var i = 0; 
+        var k = humanData.length;
+        var newDataset = []; //Our filtered dataset
+        for(i; i<k; i++) {
+        	var currentAge = humanData[i].Age
+`					`if(currentAge >= minAge) {
+							if(minAge >= 100) {newDataset.push(humanData[i]);}
+              else if (currentAge <= maxAge) {newDataset.push(humanData[i]);}
+              }
+        }
+        
+			
+	//Stats for other graphics
+  var newOneData = oneStats(newDataset);
+	var newTwoData = graph2Stats(newDataset);
+	var newThreeData = threeStats(newDataset);
+  var newFiveData = fiveStats(newDataset);
+	//Update graphics 
+  updateOne(newOneData);
+	updateTwo(newTwoData);
+  updateThree(newThreeData);
+  updateFive(newFiveData);
+
+	})
+  
+// Strain filter 
+dispatch.on('five', function(Strain) { // change to map graphic 
+		this.Strain = Strain
+
+        var i = 0; 
+        var k = humanData.length;
+		
+        var newDataset = []; //Our filtered dataset
+		
+        for(i; i<k; i++) {
+            var currentStrain = humanData[i].Strain;
+            if (currentStrain == Strain) {
+            	newDataset.push(humanData[i]);
+				}
+			}
+	//Stats for other graphics
+  var newOneData = oneStats(newDataset);
+	var newTwoData = graph2Stats(newDataset);
+	var newThreeData = threeStats(newDataset);
+  var newFourData = fourStats(newDataset);
+	//Update graphics 
+  updateOne(newOneData);
+	updateTwo(newTwoData);
+  updateThree(newThreeData);
+  updateFour(newFourData);
+
+	})  
+  
 
 //svg container				
 	var SVG = d3.select('body')
@@ -88,13 +261,6 @@ var predictedStrains = ["H1N1" ,"H3N2"];
 		
 var addTXT = function(current){
 	SVG.selectAll("text").remove()
-	
-	SVG.append("text")
-			.attr("x", 370)
-			.attr("y", 950)
-			.text("Page: ")
-			.attr("font-size", "30px")
-			.attr("fill","black")
 
 	SVG.append("text")						
 			.attr("x", 450)
@@ -155,6 +321,39 @@ var addTXT = function(current){
 	}
 	
 addTXT(1);
+  
+var graph2Stats = function(d) {
+		var minCollectionDate = 100000000;
+    var maxEndDate = 0;
+   	var i = 0;
+    var k = d.length;
+    for(i;i<k;i++){
+    	var currentCollectionDate = d[i].CollectionDate;
+      var currentEndDate = d[i].CollectionDate;
+      if(currentCollectionDate < minCollectionDate){
+      	minCollectionDate = currentCollectionDate;
+      }
+      if(currentEndDate > maxEndDate){
+      	maxEndDate = currentEndDate;
+      } else{
+      	continue;
+      }
+    }
+    var twoData = [];
+    for(minCollectionDate; minCollectionDate < maxEndDate; minCollectionDate++){
+    	var count = 0;
+      var i = 0;
+      for(i;i<k,i++){
+      	if((d[i].CollectionDate < minCollectionDate) && (d[i].endDate > minCollectionDate)){
+        	count = count+1; 
+        }
+        continue;
+      }
+      twoData.push({Date: minCollectionDate, Value: count });
+      continue;
+    }
+	return twoData;
+}
 
 var graph5Stats = function (d) {
 	strainsVisited = [];
