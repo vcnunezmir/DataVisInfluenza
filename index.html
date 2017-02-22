@@ -113,9 +113,9 @@ var ageCohorts = [
 var predictedStrains = ["H1N1" ,"H3N2"];
  
 // Filters
-var dispatchFltr = d3.dispatch('one', 'two','three','four','five','sexButton');
+
 // state filter 
-dispatchFltr.on('one', function(State) { 
+var filterState = function(State) { 
 		this.State = State
 
         var i = 0; 
@@ -129,21 +129,10 @@ dispatchFltr.on('one', function(State) {
             	newDataset.push(humanData[i]);
 				}
 			}
-	//Stats for other graphics
-	var newTwoData = graph2Stats(newDataset);
-	var newThreeData = threeStats(newDataset);
-	var newFourData = fourStats(newDataset);
-	var newFiveData = fiveStats(newDataset);
-	//Update graphics 
-	updateTwo(newTwoData);
-  updateThree(newThreeData);
-  updateFour(newFourData);
-  updateFive(newFiveData);
-
-	})
+	}
  
 //  sex Filter 
-dispatchFltr.on('sexButton', function(Sex) { 
+var filterSex =  function(Sex) { 
 		this.Sex = Sex
 
         var i = 0; 
@@ -157,23 +146,10 @@ dispatchFltr.on('sexButton', function(Sex) {
             	newDataset.push(humanData[i]);
 				}
 			}
-	//Stats for other graphics
-  var newOneData = oneStats(newDataset);
-	var newTwoData = graph2Stats(newDataset);
-	var newThreeData = threeStats(newDataset);
-  var newFourData = fourStats(newDataset);
-  var newFiveData = fiveStats(newDataset);
-	//Update graphics 
-  updateOne(newOneData);
-	updateTwo(newTwoData);
-  updateThree(newThreeData);
-  updateFour(newFourData);
-  updateFive(newFiveData);
-
-	})  
+	}  
   
  // Symptom filter   for this to work we will need to determine if they have symptoms earlier and set it to a boolean <- 1 is symptotmatic
-dispatchFltr.on('three', function() { 
+var filterSymptoms = function() { 
         var i = 0; 
         var k = humanData.length;
 		
@@ -185,23 +161,13 @@ dispatchFltr.on('three', function() {
             	newDataset.push(humanData[i]);
 				}
 			}
-	//Stats for other graphics
-	var newOneData = oneStats(newDataset);
-  var newTwoData = graph2Stats(newDataset);
-  var newFourData = fourStats(newDataset);
-  var newFiveData = fiveStats(newDataset);
-	//Update graphics 
-  updateOne(newOneData);
-	updateTwo(newTwoData);
-  updateFour(newFourData);
-  updateFive(newFiveData);
-
-	})
+	}
   
   
   
   // age filter 
-dispatchFltr.on('four', function(ageIndex) { // can use age index  
+
+var filterAge =  function(ageIndex) { // can use age index  
 		this.Index = ageIndex;
     		var minAge = ageIndex*5;
         var maxAge = minAge + 4; 
@@ -215,23 +181,10 @@ dispatchFltr.on('four', function(ageIndex) { // can use age index
               else if (currentAge <= maxAge) {newDataset.push(humanData[i]);}
               }
         }
-        
-			
-	//Stats for other graphics
-  var newOneData = oneStats(newDataset);
-	var newTwoData = graph2Stats(newDataset);
-	var newThreeData = threeStats(newDataset);
-  var newFiveData = fiveStats(newDataset);
-	//Update graphics 
-  updateOne(newOneData);
-	updateTwo(newTwoData);
-  updateThree(newThreeData);
-  updateFive(newFiveData);
-
-	})
+   	}
   
 // Strain filter 
-dispatchFltr.on('five', function(Strain) { // change to map graphic 
+var filterStrain = function(Strain) { // change to map graphic 
 		this.Strain = Strain
 
         var i = 0; 
@@ -245,18 +198,7 @@ dispatchFltr.on('five', function(Strain) { // change to map graphic
             	newDataset.push(humanData[i]);
 				}
 			}
-	//Stats for other graphics
-  var newOneData = oneStats(newDataset);
-	var newTwoData = graph2Stats(newDataset);
-	var newThreeData = threeStats(newDataset);
-  var newFourData = fourStats(newDataset);
-	//Update graphics 
-  updateOne(newOneData);
-	updateTwo(newTwoData);
-  updateThree(newThreeData);
-  updateFour(newFourData);
-
-	})  
+	}  
   
 
 //svg container				
@@ -731,19 +673,19 @@ var dataset2 = graph2Stats(avianData)
 	
 	graph2a.selectAll('path')
 		.datum(dataset1)
-		.attr('transform','translate(500,100)')	
+		.attr('transform','translate(100,100)')	
 		.transition()
 		.attr('d', line2a)
 		
 	graph2b.selectAll('path')
 		.datum(dataset2)
-		.attr('transform','translate(500,100)')	
+		.attr('transform','translate(100,100)')	
 		.transition()
 		.attr('d', line2b)
 		
 	graph2a.selectAll('circle')
 		.data(dataset1)
-		.attr('transform','translate(500,100)')
+		.attr('transform','translate(100,100)')
 		.transition()
         .attr('cy',function (d) {
                     return yScale2(d.Value);
@@ -753,7 +695,7 @@ var dataset2 = graph2Stats(avianData)
 		
 	graph2b.selectAll('circle')
 		.data(dataset2)
-		.attr('transform','translate(500,100)')
+		.attr('transform','translate(100,100)')
 		.transition()
         .attr('cy',function (d) {
                     return yScale2(d.Value);
