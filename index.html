@@ -16,9 +16,10 @@ d3.csv('humanData.csv', function (error,humanData){
 
 avianData.forEach(function(d) {
         d.CollectionDate = d.CollectionDate.split("/");
-		d.CollectionDate = d.CollectionDate[2].concat(d.CollectionDate[1]).concat(d.CollectionDate[0]);
-		d.CollectionDate = +d.CollectionDate;
-		d.endDate = d.CollectionDate + 14;
+		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1]);
+		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
+		d.CollectionDate = d.CollectionDate.getTime()/86400000;
+		d.EndDate = d.EndDate.getTime()/86400000;
     })
 humanData.forEach(function(d) {
 		d.Age = d.Age.split(",");
@@ -27,12 +28,17 @@ humanData.forEach(function(d) {
 		d.CollectionDate = d.CollectionDate.split(",");
 		d.CollectionDate = d.CollectionDate[0];
 		d.CollectionDate = d.CollectionDate.split("/");
-		d.CollectionDate = d.CollectionDate[2].concat(d.CollectionDate[1]).concat(d.CollectionDate[0]);
-		d.CollectionDate = +d.CollectionDate;
+		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1])
+		
+		
 		if ((d.Age >= 65) || (d.Age <= 10)){
-    			d.endDate = d.CollectionDate + 14;
-  		 } else {d.endDate = d.CollectionDate + 7; }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              		
-		if (d.Temperature == "-N/A-") {
+    			d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
+  		 } else {d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+7);}
+		
+		d.EndDate = d.EndDate.getTime()/86400000;
+		d.CollectionDate = d.CollectionDate.getTime()/86400000;
+
+		 if (d.Temperature == "-N/A-") {
 			d.Temperature = "0"
 			}
 		d.Temperature = +d.Temperature;
@@ -55,16 +61,14 @@ humanData.forEach(function(d) {
         			if(currentSymptom.includes("cough")){
         			  var currentArray = [];
 				  currentArray = currentSymptom.split('(');
-				  currentArray[2].strip("(",")"," ")
-				  if ((currentArray[2].includes("Y") || currentArray[2].includes("M")) || currentArray[2].includes("4") {
+				  if ((currentArray.includes("Y",2) || currentArray.includes("M",2)) || currentArray.includes("4",2)) {
           				counter = counter +1 
          			   }
        				 } 
         			if(currentSymptom.includes("myalgia")){
         			  var currentArray = [];
 				  currentArray = currentSymptom.split('(');
-				  currentArray[2].strip("(",")"," ")
-				  if ((currentArray[2].includes("Y") || currentArray[2].includes("M")) || currentArray[2].includes("4") {
+				  if ((currentArray.includes("Y",2) || currentArray.includes("M",2)) || currentArray.includes("4",2)) {
           				counter = counter +1 
          			   }
        				 } 
@@ -106,10 +110,12 @@ var ageCohorts = [
 	{Index: '20',  Age: '100+' , Percent: 0.000172841364269368 }  ];
 	
 	
-var predictedStrains = ["H1N1" ,"H3N2"]; 
+var predictedStrains = ["H1N1" ,"H3N2"];
+ 
 // Filters
+var dispatchFltr = d3.dispatch('one', 'two','three','four','five','sexButton');
 // state filter 
-dispatch.on('one', function(State) { 
+dispatchFltr.on('one', function(State) { 
 		this.State = State
 
         var i = 0; 
@@ -126,8 +132,8 @@ dispatch.on('one', function(State) {
 	//Stats for other graphics
 	var newTwoData = graph2Stats(newDataset);
 	var newThreeData = threeStats(newDataset);
-  var newFourData = fourStats(newDataset);
-  var newFiveData = fiveStats(newDataset);
+	var newFourData = fourStats(newDataset);
+	var newFiveData = fiveStats(newDataset);
 	//Update graphics 
 	updateTwo(newTwoData);
   updateThree(newThreeData);
@@ -137,7 +143,7 @@ dispatch.on('one', function(State) {
 	})
  
 //  sex Filter 
-dispatch.on('sexButton', function(Sex) { 
+dispatchFltr.on('sexButton', function(Sex) { 
 		this.Sex = Sex
 
         var i = 0; 
@@ -167,7 +173,7 @@ dispatch.on('sexButton', function(Sex) {
 	})  
   
  // Symptom filter   for this to work we will need to determine if they have symptoms earlier and set it to a boolean <- 1 is symptotmatic
-dispatch.on('three', function() { 
+dispatchFltr.on('three', function() { 
         var i = 0; 
         var k = humanData.length;
 		
@@ -195,7 +201,7 @@ dispatch.on('three', function() {
   
   
   // age filter 
-dispatch.on('four', function(ageIndex) { // can use age index  
+dispatchFltr.on('four', function(ageIndex) { // can use age index  
 		this.Index = ageIndex;
     		var minAge = ageIndex*5;
         var maxAge = minAge + 4; 
@@ -204,7 +210,7 @@ dispatch.on('four', function(ageIndex) { // can use age index
         var newDataset = []; //Our filtered dataset
         for(i; i<k; i++) {
         	var currentAge = humanData[i].Age
-`					`if(currentAge >= minAge) {
+					if(currentAge >= minAge) {
 							if(minAge >= 100) {newDataset.push(humanData[i]);}
               else if (currentAge <= maxAge) {newDataset.push(humanData[i]);}
               }
@@ -225,7 +231,7 @@ dispatch.on('four', function(ageIndex) { // can use age index
 	})
   
 // Strain filter 
-dispatch.on('five', function(Strain) { // change to map graphic 
+dispatchFltr.on('five', function(Strain) { // change to map graphic 
 		this.Strain = Strain
 
         var i = 0; 
@@ -261,6 +267,13 @@ dispatch.on('five', function(Strain) { // change to map graphic
 		
 var addTXT = function(current){
 	SVG.selectAll("text").remove()
+	
+	SVG.append("text")
+			.attr("x", 370)
+			.attr("y", 950)
+			.text("Page: ")
+			.attr("font-size", "30px")
+			.attr("fill","black")
 
 	SVG.append("text")						
 			.attr("x", 450)
@@ -323,37 +336,37 @@ var addTXT = function(current){
 addTXT(1);
   
 var graph2Stats = function(d) {
-		var minCollectionDate = 100000000;
-    var maxEndDate = 0;
-   	var i = 0;
+	var minCollectionDate = 100000000000000;
+	var maxEndDate = 0;
     var k = d.length;
-    for(i;i<k;i++){
+    for(i=0;i<k;i++){
+
     	var currentCollectionDate = d[i].CollectionDate;
-      var currentEndDate = d[i].CollectionDate;
+		var currentEndDate = d[i].EndDate;
+		
       if(currentCollectionDate < minCollectionDate){
       	minCollectionDate = currentCollectionDate;
       }
       if(currentEndDate > maxEndDate){
       	maxEndDate = currentEndDate;
-      } else{
-      	continue;
-      }
+      } 
     }
     var twoData = [];
-    for(minCollectionDate; minCollectionDate < maxEndDate; minCollectionDate++){
-    	var count = 0;
-      var i = 0;
-      for(i;i<k,i++){
-      	if((d[i].CollectionDate < minCollectionDate) && (d[i].endDate > minCollectionDate)){
+	
+    for(currentDate = minCollectionDate; currentDate < maxEndDate; currentDate++){
+		
+		var count = 0;
+		
+      for(i=0;i<k;i++){
+      	if((d[i].CollectionDate <= currentDate) && (d[i].EndDate >= currentDate)){
         	count = count+1; 
         }
-        continue;
       }
-      twoData.push({Date: minCollectionDate, Value: count });
-      continue;
+      twoData.push({Date: currentDate, Value: count });
     }
 	return twoData;
 }
+
 
 var graph5Stats = function (d) {
 	strainsVisited = [];
@@ -390,68 +403,74 @@ var graph5Stats = function (d) {
 
 var graph2a = SVG.append("g");
 var graph2b = SVG.append("g");
+
+var Dataset2a = graph2Stats(humanData)
+var Dataset2b = graph2Stats(avianData)
+
+
 //Scales for line graph
 	//For line chart
-	var xScale3 = d3.scaleLinear()
-		.domain([20120000,20169999])
-		.range([0,1000]);
-	var yScale3 = d3.scaleLinear()
-		.domain([0,100])
-		.range([500,1]);
+	var xScale2 = d3.scaleLinear()
+		.domain([15492,15868])
+		.range([0,700]);
+	var yScale2 = d3.scaleLinear()
+		.domain([0,200])
+		.range([500,0]);
 
-	var line1 = d3.line()
+	var line2a = d3.line()
 		.x(function(d) { 
-			return xScale3(d.CollectionDate); 
+			return xScale2(d.Date); 
 			})
 		.y(function(d) { 
-			return yScale3(d.Age); 
+			return yScale2(d.Value); 
 			})
 		
 		
-	var line2 = d3.line()
+	var line2b = d3.line()
 		.x(function(d) { 
-			return xScale3(d.CollectionDate); 
+			return xScale2(d.Date); 
 			})
 		.y(function(d) { 
-			return yScale3(d.Temperature); 
+			return yScale2(d.Value); 
 			})
-			
+	
 		graph2a.append('path')
-		.datum(humanData)
-		.attr('d', line1)
-		.attr('transform','translate(1000000,200)')
+		.datum(Dataset2a)
+		.attr('d', line2a)
+		.attr('transform','translate(100000,200)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
 		
 		graph2b.append('path')
-		.datum(humanData)
-		.attr('d', line2)
-		.attr('transform','translate(10000000,200)')
+		.datum(Dataset2b)
+		.attr('d', line2b)
+		.attr('transform','translate(1000000,200)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
 		
 		
 		graph2a.selectAll('lineChart')
-		.data(humanData)
+		.data(Dataset2a)
         .enter()
 		.append('circle')
-        .attr('transform','translate(100000,200)')
+        .attr('transform','translate(10000000,200)')
         .attr('cy',function (d) {
-                    return yScale3(d.Age);
+                    return yScale2(d.Value);
                     })
         .attr('cx',function (d) {
-                    return xScale3(d.CollectionDate);
+                    return xScale2(d.Date);
                     })
 		.attr('r',4)		
         .attr('fill', 'green')
 		.on("click", function(d){
-			var v = d.Age
+			var v = d.Date
+			console.log(v)
 			dispatch.call('page3',this,v)
 			graph2a.selectAll('circle')
 			.transition()
-      .attr('fill','black')
+      .attr('fill','green')
 			.attr('r',4)
 			d3.select(this)
 			.transition()
@@ -460,24 +479,25 @@ var graph2b = SVG.append("g");
 			})
 			
 		graph2b.selectAll('lineChart')
-		.data(humanData)
+		.data(Dataset2b)
         .enter()
 		.append('circle')
         .attr('transform','translate(1000000,200)')
         .attr('cy',function (d) {
-                    return yScale3(d.Temperature);
+                    return yScale2(d.Value);
                     })
         .attr('cx',function (d) {
-                    return xScale3(d.CollectionDate);
+                    return xScale2(d.Date);
                     })
 		.attr('r',4)		
         .attr('fill', 'purple')
 		.on("click", function(d){
-			var v = d.Age
+			var v = d.Date
+			console.log(v)
 			dispatch.call('page3',this,v)
 			graph2b.selectAll('circle')
 			.transition()
-      .attr('fill','black')
+      .attr('fill','purple')
 			.attr('r',4)
 			d3.select(this)
 			.transition()
@@ -500,7 +520,7 @@ var graph3b = SVG.append("g");
 		.domain([0,100])
 		.range([500,1]);
 
-	var line1 = d3.line()
+	var line3a = d3.line()
 		.x(function(d) { 
 			return xScale3(d.CollectionDate); 
 			})
@@ -509,7 +529,7 @@ var graph3b = SVG.append("g");
 			})
 		
 		
-	var line2 = d3.line()
+	var line3b = d3.line()
 		.x(function(d) { 
 			return xScale3(d.CollectionDate); 
 			})
@@ -519,7 +539,7 @@ var graph3b = SVG.append("g");
 			
 		graph3a.append('path')
 		.datum(humanData)
-		.attr('d', line1)
+		.attr('d', line3a)
 		.attr('transform','translate(1000000,200)')
 		.attr('fill','none')
 		.attr('stroke','red')
@@ -527,7 +547,7 @@ var graph3b = SVG.append("g");
 		
 		graph3b.append('path')
 		.datum(humanData)
-		.attr('d', line2)
+		.attr('d', line3b)
 		.attr('transform','translate(10000000,200)')
 		.attr('fill','none')
 		.attr('stroke','black')
@@ -705,35 +725,38 @@ dispatch.on('page3.graph1', function(current){
 	
 //Graph 2: Quantity of Infections
 dispatch.on('page3.graph2', function(current){
+
+var dataset1 = graph2Stats(humanData)
+var dataset2 = graph2Stats(avianData)
 	
 	graph2a.selectAll('path')
-		.datum(humanData)
+		.datum(dataset1)
 		.attr('transform','translate(500,100)')	
 		.transition()
-		.attr('d', line1)
+		.attr('d', line2a)
 		
 	graph2b.selectAll('path')
-		.datum(humanData)
+		.datum(dataset2)
 		.attr('transform','translate(500,100)')	
 		.transition()
-		.attr('d', line2)
+		.attr('d', line2b)
 		
 	graph2a.selectAll('circle')
-		.data(humanData)
+		.data(dataset1)
 		.attr('transform','translate(500,100)')
 		.transition()
         .attr('cy',function (d) {
-                    return yScale3(d.Age);
+                    return yScale2(d.Value);
                     })
 		.attr('r',4)		
         .attr('fill', 'green')
 		
 	graph2b.selectAll('circle')
-		.data(humanData)
+		.data(dataset2)
 		.attr('transform','translate(500,100)')
 		.transition()
         .attr('cy',function (d) {
-                    return yScale3(d.Temperature);
+                    return yScale2(d.Value);
                     })
 		.attr('r',4)		
         .attr('fill', 'purple')
@@ -748,13 +771,13 @@ dispatch.on('page3.graph3', function(current){
 		.datum(humanData)
 		.attr('transform','translate(120,100)')	
 		.transition()
-		.attr('d', line1)
+		.attr('d', line3a)
 		
 	graph3b.selectAll('path')
 		.datum(humanData)
 		.attr('transform','translate(120,100)')	
 		.transition()
-		.attr('d', line2)
+		.attr('d', line3b)
 		
 	graph3a.selectAll('circle')
 		.data(humanData)
