@@ -277,14 +277,17 @@ var addTXT = function(current){
 	
 addTXT(1);
   
-var graph2Stats = function(d) {
+var graph2Stats = function(human,avian) {
 	var minCollectionDate = 100000000000000;
 	var maxEndDate = 0;
-    var k = d.length;
-    for(i=0;i<k;i++){
+    var kh = human.length;
+	var ka = avian.length;
+	
+	//Find earliest and latest date in human dataset
+    for(i=0;i<kh;i++){
 
-    	var currentCollectionDate = d[i].CollectionDate;
-		var currentEndDate = d[i].EndDate;
+    	var currentCollectionDate = human[i].CollectionDate;
+		var currentEndDate = human[i].EndDate;
 		
       if(currentCollectionDate < minCollectionDate){
       	minCollectionDate = currentCollectionDate;
@@ -293,19 +296,53 @@ var graph2Stats = function(d) {
       	maxEndDate = currentEndDate;
       } 
     }
-    var twoData = [];
 	
+	//Find earliest and latest date in avian dataset
+	for(i=0;i<ka;i++){
+
+    	var currentCollectionDate = avian[i].CollectionDate;
+		var currentEndDate = avian[i].EndDate;
+		
+      if(currentCollectionDate < minCollectionDate){
+      	minCollectionDate = currentCollectionDate;
+      }
+      if(currentEndDate > maxEndDate){
+      	maxEndDate = currentEndDate;
+      } 
+    }
+	
+    var twoData = [];//both
+	var twoDataH = []; //human
+	var twoDataA = [];//avian
+	
+	//Find count of contagious at date - human
     for(currentDate = minCollectionDate; currentDate < maxEndDate; currentDate++){
 		
 		var count = 0;
 		
-      for(i=0;i<k;i++){
-      	if((d[i].CollectionDate <= currentDate) && (d[i].EndDate >= currentDate)){
+      for(i=0;i<kh;i++){
+      	if((human[i].CollectionDate <= currentDate) && (human[i].EndDate >= currentDate)){
         	count = count+1; 
         }
       }
-      twoData.push({Date: currentDate, Value: count });
+      twoDataH.push({Date: currentDate, Value: count });
     }
+	
+	//Find count of contagious at date - avian
+	for(currentDate = minCollectionDate; currentDate < maxEndDate; currentDate++){
+		
+		var count = 0;
+		
+      for(i=0;i<ka;i++){
+      	if((avian[i].CollectionDate <= currentDate) && (avian[i].EndDate >= currentDate)){
+        	count = count+1; 
+        }
+      }
+      twoDataA.push({Date: currentDate, Value: count });
+    }
+	
+	twoData.push(twoDataH);
+	twoData.push(twoDataA);
 	return twoData;
 }
 
@@ -346,14 +383,14 @@ var graph5Stats = function (d) {
 var graph2a = SVG.append("g");
 var graph2b = SVG.append("g");
 
-var Dataset2a = graph2Stats(humanData)
-var Dataset2b = graph2Stats(avianData)
-
+var dataset = graph2Stats(humanData,avianData)
+var minDate = Math.min((dataset[0])[0].Date,(dataset[1])[0].Date)
+var maxDate = Math.min((dataset[0])[dataset[0].length-1].Date,(dataset[1])[dataset[0].length-1].Date)
 
 //Scales for line graph
 	//For line chart
 	var xScale2 = d3.scaleLinear()
-		.domain([15492,15868])
+		.domain([minDate,maxDate])
 		.range([0,700]);
 	var yScale2 = d3.scaleLinear()
 		.domain([0,200])
@@ -377,7 +414,7 @@ var Dataset2b = graph2Stats(avianData)
 			})
 	
 		graph2a.append('path')
-		.datum(Dataset2a)
+		.datum(dataset[0])
 		.attr('d', line2a)
 		.attr('transform','translate(100000,200)')
 		.attr('fill','none')
@@ -385,7 +422,7 @@ var Dataset2b = graph2Stats(avianData)
 		.attr('stroke-width',2)
 		
 		graph2b.append('path')
-		.datum(Dataset2b)
+		.datum(dataset[1])
 		.attr('d', line2b)
 		.attr('transform','translate(1000000,200)')
 		.attr('fill','none')
@@ -394,7 +431,7 @@ var Dataset2b = graph2Stats(avianData)
 		
 		
 		graph2a.selectAll('lineChart')
-		.data(Dataset2a)
+		.data(dataset[0])
         .enter()
 		.append('circle')
         .attr('transform','translate(10000000,200)')
@@ -421,7 +458,7 @@ var Dataset2b = graph2Stats(avianData)
 			})
 			
 		graph2b.selectAll('lineChart')
-		.data(Dataset2b)
+		.data(dataset[1])
         .enter()
 		.append('circle')
         .attr('transform','translate(1000000,200)')
@@ -668,23 +705,22 @@ dispatch.on('page3.graph1', function(current){
 //Graph 2: Quantity of Infections
 dispatch.on('page3.graph2', function(current){
 
-var dataset1 = graph2Stats(humanData)
-var dataset2 = graph2Stats(avianData)
+var dataset = graph2Stats(humanData,avianData)
 	
 	graph2a.selectAll('path')
-		.datum(dataset1)
+		.datum(dataset[0])
 		.attr('transform','translate(100,100)')	
 		.transition()
 		.attr('d', line2a)
 		
 	graph2b.selectAll('path')
-		.datum(dataset2)
+		.datum(dataset[1])
 		.attr('transform','translate(100,100)')	
 		.transition()
 		.attr('d', line2b)
 		
 	graph2a.selectAll('circle')
-		.data(dataset1)
+		.data(dataset[0])
 		.attr('transform','translate(100,100)')
 		.transition()
         .attr('cy',function (d) {
@@ -694,7 +730,7 @@ var dataset2 = graph2Stats(avianData)
         .attr('fill', 'green')
 		
 	graph2b.selectAll('circle')
-		.data(dataset2)
+		.data(dataset[1])
 		.attr('transform','translate(100,100)')
 		.transition()
         .attr('cy',function (d) {
