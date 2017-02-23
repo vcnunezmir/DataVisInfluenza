@@ -78,6 +78,7 @@ humanData.forEach(function(d) {
 				d.Symptoms = 0; 
 			}
     		}
+		d.State = d.State.trim();
 		d.Subtype = d.Subtype.split(",");
 		d.Subtype = d.Subtype[0];
 		if (d.Subtype == "-N/A-" || d.Subtype == "unknown"){
@@ -112,6 +113,39 @@ var ageCohorts = [
 	
 var predictedStrains = ["H1N1" ,"H3N2"];
  
+	
+var stateData = [
+ {State: 'Alabama', Population: '4849377' , Latitude: '32.361538 ', Longitude: '-86.279118' } 
+ {State: 'Alaska', Population: '737732' , Latitude: '58.301935 ', Longitude: '-134.41974' } 
+ {State: 'Arizona', Population: '6731484' , Latitude: '33.448457 ', Longitude: '-112.073844' } 
+ {State: 'California', Population: '38802500' , Latitude: '38.555605 ', Longitude: '-121.468926' } 
+ {State: 'Colorado', Population: '5355856' , Latitude: '39.7391667 ', Longitude: '-104.984167' } 
+ {State: 'Delaware', Population: '935614' , Latitude: '39.161921 ', Longitude: '-75.526755' } 
+ {State: 'DistrictofColumbia', Population: '658893' , Latitude: '38.913 ', Longitude: '77.013' } 
+ {State: 'Florida', Population: '19893297' , Latitude: '30.4518 ', Longitude: '-84.27277' } 
+ {State: 'Georgia', Population: '10097343' , Latitude: '33.76 ', Longitude: '-84.39' } 
+ {State: 'Hawaii', Population: '1419561' , Latitude: '21.30895 ', Longitude: '-157.826182' } 
+ {State: 'Illinois', Population: '12880580' , Latitude: '39.78325 ', Longitude: '-89.650373' } 
+ {State: 'Kentucky', Population: '4413457' , Latitude: '38.197274 ', Longitude: '-84.86311' } 
+ {State: 'Louisiana', Population: '4649676' , Latitude: '30.45809 ', Longitude: '-91.140229' } 
+ {State: 'Maryland', Population: '5976407' , Latitude: '38.972945 ', Longitude: '-76.501157' } 
+ {State: 'Massachusetts', Population: '6745408' , Latitude: '42.2352 ', Longitude: '-71.0275' } 
+ {State: 'Michigan', Population: '9909877' , Latitude: '42.7335 ', Longitude: '-84.5467' } 
+ {State: 'Mississippi', Population: '2984926' , Latitude: '32.32 ', Longitude: '-90.207' } 
+ {State: 'Nebraska', Population: '1881503' , Latitude: '40.809868 ', Longitude: '-96.675345' } 
+ {State: 'Nevada', Population: '2839099' , Latitude: '39.160949 ', Longitude: '-119.753877' } 
+ {State: 'New Jersey', Population: '8938175' , Latitude: '40.221741 ', Longitude: '-74.756138' } 
+ {State: 'NewYork', Population: '19746227' , Latitude: '42.659829 ', Longitude: '-73.781339' } 
+ {State: 'NorthCarolina', Population: '9943964' , Latitude: '35.771 ', Longitude: '-78.638' } 
+ {State: 'Ohio', Population: '11594163' , Latitude: '39.962245 ', Longitude: '-83.000647' } 
+ {State: 'Oklahoma', Population: '3878051' , Latitude: '35.482309 ', Longitude: '-97.534994' } 
+ {State: 'SouthCarolina', Population: '4832482' , Latitude: '34 ', Longitude: '-81.035' } 
+ {State: 'SouthDakota', Population: '853175' , Latitude: '44.367966 ', Longitude: '-100.336378' } 
+ {State: 'Tennessee', Population: '6549352' , Latitude: '36.165 ', Longitude: '-86.784' } 
+ {State: 'Texas', Population: '26956958' , Latitude: '30.266667 ', Longitude: '-97.75' } 
+ {State: 'Virginia', Population: '8326289' , Latitude: '37.54 ', Longitude: '-77.46' } 
+ {State: 'Washington', Population: '7061530' , Latitude: '47.042418 ', Longitude: '-122.893077' } 
+];
 // Filters
 
 // state filter 
@@ -345,6 +379,75 @@ var graph2Stats = function(human,avian) {
 	twoData.push(twoDataA);
 	return twoData;
 }
+
+var graph3Stats = function(d, stateData) {
+		var minCollectionDate = 1487785065794;
+    var maxEndDate = 0;
+    var count = 0;
+    var symptomCount = 0;
+   	var i = 0;
+    var k = d.length;
+    for(i;i<k;i++){
+    	var currentCollectionDate = d[i].CollectionDate;
+      var currentEndDate = d[i].endDate;
+      if(currentCollectionDate < minCollectionDate){
+      	minCollectionDate = currentCollectionDate;
+      }
+      if(currentEndDate > maxEndDate){
+      	maxEndDate = currentEndDate;
+      } else{
+      	continue;
+      }
+    }
+    var threeData = [];
+    for(minCollectionDate; minCollectionDate < maxEndDate; minCollectionDate++){
+      var i = 0;
+      for(i;i<k,i++){
+      	if((d[i].CollectionDate < minCollectionDate) && (d[i].endDate > minCollectionDate)){
+        	count = count+1; 
+          if(d[i].Symptoms == 1){
+          	symptomCounter = symptomCounter + 1;
+          }
+        }
+        continue;
+      }
+      threeData.push({Date: minCollectionDate, Value: count, SymptomCount: symptomCounter});
+      continue;
+    }
+	return threeData;
+}
+
+
+var graph4Stats = function(d, stateData) {
+	var a = 0;
+  var b = stateData.length;
+  var population = 0 
+  for(a;a<b;a++){
+  	population = stateData[a].Population + population;
+  }
+  var i =0;
+  var k = 21
+  var fourData = [];
+  for(i;i<k;i++){ 
+  		var minAge = i * 5;
+      var maxAge = (i*5)+4;
+      var counter = 0; 
+      var g = 0 ;
+      var h= d.length;
+      for(g;g<h;g++){
+      		var currentAge  = d[g].Age;
+          if((currentAge>= minAge) && (currentAge <= maxAge)) {
+          	counter = counter + 1;
+          }
+      }
+      popPercent = counter/population;
+      fourData.push({Index: i, PopulationPercent: popPercent});
+  }
+  return fourData;
+}
+
+
+
 
 
 var graph5Stats = function (d) {
