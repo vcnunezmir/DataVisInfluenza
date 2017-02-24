@@ -1,4 +1,7 @@
 # DataVisInfluenza
+
+Project repo: https://github.com/vcnunezmir/DataVisInfluenza
+
 Data Vis Final Jacob Moon and Virginia Nunez
 
 Create a proposal document addressing the following points. Use the points as headers in your document. Each team member must push this document into his/her homework directory. As a ballpark number: your proposal should contain about 3-4 pages of text, plus 5-6 pages of sketches.
