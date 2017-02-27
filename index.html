@@ -669,7 +669,7 @@ var graph3b = SVG.append("g");
 		.attr('stroke','black')
 		.attr('stroke-width',2)
 		
-	/*	
+		/*
 		graph3a.selectAll('lineChart')
 		.data(dataset3)
         .enter()
@@ -683,6 +683,10 @@ var graph3b = SVG.append("g");
                     })
 		.attr('r',4)		
         .attr('fill', 'red')
+		.on("click", function(d){
+			console.log(d.Date)
+			console.log(d.SymptomCount)
+			})
 				
 		graph3b.selectAll('lineChart')
 		.data(dataset3)
@@ -697,7 +701,11 @@ var graph3b = SVG.append("g");
                     })
 		.attr('r',4)		
         .attr('fill', 'purple')
-*/
+		.on("click", function(d){
+			console.log(d.Date)
+			console.log(d.Value)
+			})
+		*/
 
 
 //Graph//Graph 4: Percent of Infected over Age
@@ -947,7 +955,12 @@ var dataset = graph2Stats(filteredH,filteredA)
 //Dispatch//Graph 3: Percent Infected compared to Symptomatic Infection
 dispatch.on('graph.three', function(filtered,avian,clicked){
 
-var dataset = graph3Stats(filtered)
+var dataset = graph3Stats(filtered,totalPop)
+
+console.log(filtered)
+console.log(dataset)
+
+
 	
 	if (clicked !== 3) {
 	
