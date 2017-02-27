@@ -216,8 +216,8 @@ var filterState = function(d,State) {
 			return newDataset;
 	}
  
-//  sex Filter 
-var filterSex =  function(d,Sex) { 
+//  Gender Filter 
+var filterGender =  function(d,Gender) { 
 
         var i = 0; 
         var k = d.length;
@@ -225,8 +225,8 @@ var filterSex =  function(d,Sex) {
         var newDataset = []; //Our filtered dataset
 		
         for(i; i<k; i++) {
-            var currentSex = d[i].Sex;
-            if (currentSex == Sex) {
+            var currentGender = d[i].Gender;
+            if (currentGender == Gender) {
             	newDataset.push(d[i]);
 				}
 			}
@@ -771,7 +771,7 @@ var dataset4 = graph4Stats(humanData)
         .attr('fill', 'red')
 		.on("click", function(d){
 			var fh = filterAge(humanData,d.Index)
-			var fa = "Nothing to see here"
+			var fa = sharedAvian
 			console.log(d.PopulationPercent)
 			console.log(d.Index*5 + " to " + (d.Index*5+4))
 			dispatch.call('graph',this,fh,fa,4)
@@ -956,11 +956,6 @@ var dataset = graph2Stats(filteredH,filteredA)
 dispatch.on('graph.three', function(filtered,avian,clicked){
 
 var dataset = graph3Stats(filtered,totalPop)
-
-console.log(filtered)
-console.log(dataset)
-
-
 	
 	if (clicked !== 3) {
 	
