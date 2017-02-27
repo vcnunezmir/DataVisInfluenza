@@ -250,11 +250,11 @@ var filterSymptoms = function(d,Symptoms) {
 	}
  
   
-  // age filter 
+// age filter 
 
 var filterAge =  function(d,ageIndex) { // can use age index  
 
-    		var minAge = ageIndex*5;
+    	var minAge = ageIndex*5;
         var maxAge = minAge + 4; 
         var i = 0; 
         var k = d.length;
@@ -292,7 +292,7 @@ var filterStrain = function(d,Strain) { // change to map graphic
 //Stats//Graph 1: The Map....
 
 var graph1Stats = function(d, stateData){
-		var minCollectionDate = 1487785065794;
+	var minCollectionDate = 1487785065794;
     var maxEndDate = 0;
    	var i = 0;
     var k = d.length;
@@ -344,13 +344,13 @@ var graph2Stats = function(human,avian) {
 	//Find earliest and latest date in human dataset
     for(i=0;i<kh;i++){
 
-    	var currentCollectionDate = human[i].CollectionDate;
-		var currentEndDate = human[i].EndDate;
+    var currentCollectionDate = human[i].CollectionDate;
+	var currentEndDate = human[i].EndDate;
 		
-      if(currentCollectionDate < minCollectionDateH){
+    if(currentCollectionDate < minCollectionDateH){
       	minCollectionDateH = currentCollectionDate;
       }
-      if(currentEndDate > maxEndDateH){
+    if(currentEndDate > maxEndDateH){
       	maxEndDateH = currentEndDate;
       } 
     }
@@ -359,27 +359,27 @@ var graph2Stats = function(human,avian) {
 	//Find earliest and latest date in avian dataset
 	for(i=0;i<ka;i++){
 
-    	var currentCollectionDate = avian[i].CollectionDate;
-		var currentEndDate = avian[i].EndDate;
+    var currentCollectionDate = avian[i].CollectionDate;
+	var currentEndDate = avian[i].EndDate;
 		
-      if(currentCollectionDate < minCollectionDateA){
+    if(currentCollectionDate < minCollectionDateA){
       	minCollectionDateA = currentCollectionDate;
       }
-      if(currentEndDate > maxEndDateA){
+    if(currentEndDate > maxEndDateA){
       	maxEndDateA = currentEndDate;
       } 
     }
-
+/*
 	//Choose the stricter values
 	var minCollectionDate = Math.max(minCollectionDateH,minCollectionDateA)
 	var maxEndDate = Math.min(maxEndDateH,maxEndDateA);
-	
+	*/
     var twoData = [];//both
 	var twoDataH = [];//human
 	var twoDataA = [];//avian
 	
 	//Find count of contagious at date - human
-    for(currentDate = minCollectionDate; currentDate < maxEndDate; currentDate++){
+    for(currentDate = minCollectionDateH; currentDate < maxEndDateH; currentDate++){
 		
 		var count = 0;
 		
@@ -392,7 +392,7 @@ var graph2Stats = function(human,avian) {
     }
 	
 	//Find count of contagious at date - avian
-	for(currentDate = minCollectionDate; currentDate < maxEndDate; currentDate++){
+	for(currentDate = minCollectionDateA; currentDate < maxEndDateA; currentDate++){
 		
 		var count = 0;
 		
@@ -411,7 +411,7 @@ var graph2Stats = function(human,avian) {
 
 //Stats//Graph 3: Percent Infected compared to Symptomatic Infection
 var graph3Stats = function(d,Population) {
-		var minCollectionDate = 1487785065794;
+	var minCollectionDate = 1487785065794;
     var maxEndDate = 0;
     var i = 0;
     var k = d.length;
@@ -545,7 +545,7 @@ d3.json("us.json", function(error, us) {
 var graph2a = SVG.append("g");
 var graph2b = SVG.append("g");
 
-var dataset2 = graph2Stats(humanData,avianData)
+var dataset2 = graph2Stats(sharedHuman,sharedAvian)
 
 //Scales for line graph
 	//For line chart
@@ -586,7 +586,7 @@ var dataset2 = graph2Stats(humanData,avianData)
 		.attr('d', line2b)
 		.attr('transform','translate(50,800)')
 		.attr('fill','none')
-		.attr('stroke','green')
+		.attr('stroke','red')
 		.attr('stroke-width',2)
 		
 	/*	
@@ -617,10 +617,8 @@ var dataset2 = graph2Stats(humanData,avianData)
                     return xScale2(d.Date);
                     })
 		.attr('r',4)		
-        .attr('fill', 'green')
-		.on("click",function(d){
-		console.log(d.Date)})
-*/
+        .attr('fill', 'red')
+	*/
 
 
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
@@ -684,7 +682,7 @@ var graph3b = SVG.append("g");
                     return xScale3(d.Date);
                     })
 		.attr('r',4)		
-        .attr('fill', 'green')
+        .attr('fill', 'red')
 				
 		graph3b.selectAll('lineChart')
 		.data(dataset3)
@@ -699,7 +697,6 @@ var graph3b = SVG.append("g");
                     })
 		.attr('r',4)		
         .attr('fill', 'purple')
-		.on("click",function(d){console.log(d.Date)})
 */
 
 
@@ -765,17 +762,21 @@ var dataset4 = graph4Stats(humanData)
 		.attr('r',4)		
         .attr('fill', 'red')
 		.on("click", function(d){
-			var fh = filterAge(humanData,d.Age)
+			var fh = filterAge(humanData,d.Index)
 			var fa = "Nothing to see here"
 			console.log(d.PopulationPercent)
+			console.log(d.Index*5 + " to " + (d.Index*5+4))
 			dispatch.call('graph',this,fh,fa,4)
-			graph4.selectAll('circle')
+			graph4a.selectAll('circle')
 			.transition()
-      .attr('fill','black')
+			.attr('fill','red')
+			.attr('r',4)
+			graph4b.selectAll('circle')
+			.transition()
+			.attr('fill','black')
 			.attr('r',4)
 			d3.select(this)
 			.transition()
-      .attr('fill','red')
 			.attr('r',8)
 			})
 			
@@ -793,17 +794,20 @@ var dataset4 = graph4Stats(humanData)
 		.attr('r',4)		
         .attr('fill', 'black')
 		.on("click", function(d){
-			var fh = filterAge(humanData,d.Age)
-			var fa = "Nothing to see here"
+			var fh = filterAge(humanData,d.Index)
+			var fa = sharedAvian
 			console.log(d.Age)
 			dispatch.call('graph',this,fh,fa,4)
-			graph4.selectAll('circle')
+			graph4a.selectAll('circle')
 			.transition()
-      .attr('fill','black')
+			.attr('fill','red')
+			.attr('r',4)
+			graph4b.selectAll('circle')
+			.transition()
+			.attr('fill','black')
 			.attr('r',4)
 			d3.select(this)
 			.transition()
-      .attr('fill','red')
 			.attr('r',8)
 			})
 	
@@ -841,17 +845,18 @@ var barDatasetA = graph5Stats(sharedAvian)
 		.attr('fill','black')
 		.attr('stroke','red')
 		.on("click", function(d){
-			var fh = filterStrain(humanData,d.Strain)
-			var fa = 'Nothing to see here'
+			var fh = filterStrain(sharedHuman,d.Strain)
+			var fa = filterStrain(sharedAvian,d.Strain)
 			console.log(d.Strain)
 			dispatch.call('graph',this,fh,fa,5)
-			graph5.selectAll('rect')
+			graph5a.selectAll('rect')
 			.transition()
-      .attr('fill','black')
+			.style('opacity',0.5)
+			graph5b.selectAll('rect')
+			.transition()
 			.style('opacity',0.5)
 			d3.select(this)
 			.transition()
-      .attr('fill','red')
 			.style('opacity',1)
 		})
 	
@@ -873,17 +878,18 @@ var barDatasetA = graph5Stats(sharedAvian)
 		.attr('fill','red')
 		.attr('stroke','black')
 		.on("click", function(d){
-			var fh = filterStrain(humanData,d.Strain)
-			var fa = 'Nothing to see here'
+			var fh = filterStrain(sharedHuman,d.Strain)
+			var fa = filterStrain(sharedAvian,d.Strain)
 			console.log(d.Strain)
 			dispatch.call('graph',this,fh,fa,5)
-			graph5.selectAll('rect')
+			graph5a.selectAll('rect')
 			.transition()
-      .attr('fill','red')
+			.style('opacity',0.5)
+			graph5b.selectAll('rect')
+			.transition()
 			.style('opacity',0.5)
 			d3.select(this)
 			.transition()
-      .attr('fill','black')
 			.style('opacity',1)
 		})
 
@@ -904,7 +910,7 @@ dispatch.on('graph.one', function(filtered,avian,clicked){
 //Dispatch//Graph 2: Quantity of Infections
 dispatch.on('graph.two', function(filteredH,filteredA,clicked){
 
-if (clicked == 1 || clicked == 5) {
+if (clicked == 1 || clicked == 4 || clicked == 5) {
 var dataset = graph2Stats(filteredH,filteredA)
 	graph2a.selectAll('path')
 		.datum(dataset[0])
@@ -915,7 +921,7 @@ var dataset = graph2Stats(filteredH,filteredA)
 		.datum(dataset[1])
 		.transition()
 		.attr('d', line2b)
-		
+	/*	
 	graph2a.selectAll('circle')
 		.data(dataset[0])
 		.transition()
@@ -932,43 +938,50 @@ var dataset = graph2Stats(filteredH,filteredA)
                     return yScale2(d.Value);
                     })
 		.attr('r',4)		
-        .attr('fill', 'green')
+        .attr('fill', 'red')
+		
+		*/
 		}
 	})
 	
 //Dispatch//Graph 3: Percent Infected compared to Symptomatic Infection
 dispatch.on('graph.three', function(filtered,avian,clicked){
+
+var dataset = graph3Stats(filtered)
 	
 	if (clicked !== 3) {
 	
 	graph3a.selectAll('path')
-		.datum(humanData)
+		.datum(dataset)
 		.transition()
 		.attr('d', line3a)
 		
 	graph3b.selectAll('path')
-		.datum(humanData)
+		.datum(dataset)
 		.transition()
 		.attr('d', line3b)
-		
+	/*
 	graph3a.selectAll('circle')
-		.data(humanData)
+		.data(dataset)
 		.transition()
         .attr('cy',function (d) {
-                    return yScale3(d.Age);
+                    return yScale3(d.SymptomCount);
                     })
 		.attr('r',4)		
-        .attr('fill', 'green')
+        .attr('fill', 'red')
 		
 	graph3b.selectAll('circle')
-		.data(humanData)
+		.data(dataset)
 		.transition()
         .attr('cy',function (d) {
-                    return yScale3(d.Temperature);
+                    return yScale3(d.Value);
                     })
 		.attr('r',4)		
         .attr('fill', 'purple')
+		
+		*/
 		}
+		
 	})
 	
 //Dispatch//Graph 4: Percent of Infected over Age
@@ -976,33 +989,53 @@ dispatch.on('graph.four', function(filtered,avian,clicked){
 
 if (clicked !== 4) {
 var dataset = graph4Stats(filtered)
-	
-	graph4.selectAll('path')
-		.datum(ageCohorts)
+
+	graph4a.selectAll('path')
+		.datum(dataset)
 		.transition()
-		.attr('d', line)
-		
-	graph4.selectAll('circle')
-		.data(ageCohorts)
+		.attr('d', line4a)
+			
+	graph4a.selectAll('circle')
+		.data(dataset)
 		.transition()
         .attr('cy',function (d) {
-                    return yScale4(d.Percent);
+                    return yScale4(d.PopulationPercent);
                     })
 		.attr('r',4)		
-        .attr('fill', 'black')
+		
+	graph4b.selectAll('circle')
+		.transition()
+		.attr('r',4)		
+
 	}
 	
 	})
 	
 //Dispatch//Graph 5: Infections by Strain	
-dispatch.on('graph.five', function(filtered,avian,clicked){
+dispatch.on('graph.five', function(filteredH,filteredA,clicked){
 
 if (clicked ==! 5){
 
-var dataset = graph5Stats(filtered)
+var datasetH = graph5Stats(filteredH)
+var datasetA = graph5Stats(filteredA)
 
-	graph5.selectAll("rect")
-		.data(dataset)
+	graph5a.selectAll("rect")
+		.data(datasetH)
+		.transition()
+		.attr('y', function (d) { 
+					return yScale5(d.Count);
+					})
+		.attr('height', function (d) { 
+					return 201 - yScale5(d.Count);
+					})
+		.attr('fill','black')
+		.attr('stroke','red')
+		.style('opacity',1)
+		
+		
+		
+	graph5b.selectAll("rect")
+		.data(datasetA)
 		.transition()
 		.attr('y', function (d) { 
 					return yScale5(d.Count);
