@@ -123,37 +123,76 @@ var predictedStrains = ["H1N1" ,"H3N2"];
  
 	
 var stateData = [
-  {State: 'Alabama', Population: '4849377' , Latitude: '32.361538 ', Longitude: '-86.279118' } , 
- {State: 'Alaska', Population: '737732' , Latitude: '58.301935 ', Longitude: '-134.41974' } , 
- {State: 'Arizona', Population: '6731484' , Latitude: '33.448457 ', Longitude: '-112.073844' } , 
- {State: 'California', Population: '38802500' , Latitude: '38.555605 ', Longitude: '-121.468926' } , 
- {State: 'Colorado', Population: '5355856' , Latitude: '39.7391667 ', Longitude: '-104.984167' } , 
- {State: 'Delaware', Population: '935614' , Latitude: '39.161921 ', Longitude: '-75.526755' } , 
- {State: 'DistrictofColumbia', Population: '658893' , Latitude: '38.913 ', Longitude: '77.013' } , 
- {State: 'Florida', Population: '19893297' , Latitude: '30.4518 ', Longitude: '-84.27277' } , 
- {State: 'Georgia', Population: '10097343' , Latitude: '33.76 ', Longitude: '-84.39' } , 
- {State: 'Hawaii', Population: '1419561' , Latitude: '21.30895 ', Longitude: '-157.826182' } , 
- {State: 'Illinois', Population: '12880580' , Latitude: '39.78325 ', Longitude: '-89.650373' } , 
- {State: 'Kentucky', Population: '4413457' , Latitude: '38.197274 ', Longitude: '-84.86311' } , 
- {State: 'Louisiana', Population: '4649676' , Latitude: '30.45809 ', Longitude: '-91.140229' } , 
- {State: 'Maryland', Population: '5976407' , Latitude: '38.972945 ', Longitude: '-76.501157' } , 
- {State: 'Massachusetts', Population: '6745408' , Latitude: '42.2352 ', Longitude: '-71.0275' } , 
- {State: 'Michigan', Population: '9909877' , Latitude: '42.7335 ', Longitude: '-84.5467' } , 
- {State: 'Mississippi', Population: '2984926' , Latitude: '32.32 ', Longitude: '-90.207' } , 
- {State: 'Nebraska', Population: '1881503' , Latitude: '40.809868 ', Longitude: '-96.675345' } , 
- {State: 'Nevada', Population: '2839099' , Latitude: '39.160949 ', Longitude: '-119.753877' } , 
- {State: 'NewJersey', Population: '8938175' , Latitude: '40.221741 ', Longitude: '-74.756138' } , 
- {State: 'NewYork', Population: '19746227' , Latitude: '42.659829 ', Longitude: '-73.781339' } , 
- {State: 'NorthCarolina', Population: '9943964' , Latitude: '35.771 ', Longitude: '-78.638' } , 
- {State: 'Ohio', Population: '11594163' , Latitude: '39.962245 ', Longitude: '-83.000647' } , 
- {State: 'Oklahoma', Population: '3878051' , Latitude: '35.482309 ', Longitude: '-97.534994' } , 
- {State: 'SouthCarolina', Population: '4832482' , Latitude: '34 ', Longitude: '-81.035' } , 
- {State: 'SouthDakota', Population: '853175' , Latitude: '44.367966 ', Longitude: '-100.336378' } , 
- {State: 'Tennessee', Population: '6549352' , Latitude: '36.165 ', Longitude: '-86.784' } , 
- {State: 'Texas', Population: '26956958' , Latitude: '30.266667 ', Longitude: '-97.75' } , 
- {State: 'Virginia', Population: '8326289' , Latitude: '37.54 ', Longitude: '-77.46' } , 
- {State: 'Washington', Population: '7061530' , Latitude: '47.042418 ', Longitude: '-122.893077' } , 
+	 {State: 'Alabama', Population: '4858979' , Latitude: '32.806671 ', Longitude: '-86.79113' } , 
+	 {State: 'Alaska', Population: '738432' , Latitude: '61.370716 ', Longitude: '-152.404419' } , 
+	 {State: 'Arizona', Population: '6828065' , Latitude: '33.729759 ', Longitude: '-111.431221' } , 
+	 {State: 'Arkansas', Population: '2978204' , Latitude: '34.969704 ', Longitude: '-92.373123' } , 
+	 {State: 'California', Population: '39144818' , Latitude: '36.116203 ', Longitude: '-119.681564' } , 
+	 {State: 'Colorado', Population: '5456574' , Latitude: '39.059811 ', Longitude: '-105.311104' } , 
+	 {State: 'Connecticut', Population: '3590886' , Latitude: '41.597782 ', Longitude: '-72.755371' } , 
+	 {State: 'Delaware', Population: '672228' , Latitude: '39.318523 ', Longitude: '-75.507141' } , 
+	 {State: 'DistrictofColumbia', Population: '945934' , Latitude: '38.897438 ', Longitude: '-77.026817' } , 
+	 {State: 'Florida', Population: '20271272' , Latitude: '27.766279 ', Longitude: '-81.686783' } , 
+	 {State: 'Georgia', Population: '10214860' , Latitude: '33.040619 ', Longitude: '-83.643074' } , 
+	 {State: 'Hawaii', Population: '1431603' , Latitude: '21.094318 ', Longitude: '-157.498337' } , 
+	 {State: 'Idaho', Population: '1654930' , Latitude: '44.240459 ', Longitude: '-114.478828' } , 
+	 {State: 'Illinois', Population: '12859995' , Latitude: '40.349457 ', Longitude: '-88.986137' } , 
+	 {State: 'Indiana', Population: '6619680' , Latitude: '39.849426 ', Longitude: '-86.258278' } , 
+	 {State: 'Iowa', Population: '3123899' , Latitude: '42.011539 ', Longitude: '-93.210526' } , 
+	 {State: 'Kansas', Population: '2911641' , Latitude: '38.5266 ', Longitude: '-96.726486' } , 
+	 {State: 'Kentucky', Population: '4425092' , Latitude: '37.66814 ', Longitude: '-84.670067' } , 
+	 {State: 'Louisiana', Population: '4670724' , Latitude: '31.169546 ', Longitude: '-91.867805' } , 
+	 {State: 'Maine', Population: '1329328' , Latitude: '44.693947 ', Longitude: '-69.381927' } , 
+	 {State: 'Maryland', Population: '6006401' , Latitude: '39.063946 ', Longitude: '-76.802101' } , 
+	 {State: 'Massachusetts', Population: '6794422' , Latitude: '42.230171 ', Longitude: '-71.530106' } , 
+	 {State: 'Michigan', Population: '9922576' , Latitude: '43.326618 ', Longitude: '-84.536095' } , 
+	 {State: 'Minnesota', Population: '5489594' , Latitude: '45.694454 ', Longitude: '-93.900192' } , 
+	 {State: 'Mississippi', Population: '2992333' , Latitude: '32.741646 ', Longitude: '-89.678696' } , 
+	 {State: 'Missouri', Population: '6083672' , Latitude: '38.456085 ', Longitude: '-92.288368' } , 
+	 {State: 'Montana', Population: '1032949' , Latitude: '46.921925 ', Longitude: '-110.454353' } , 
+	 {State: 'Nebraska', Population: '1896190' , Latitude: '41.12537 ', Longitude: '-98.268082' } , 
+	 {State: 'Nevada', Population: '2890845' , Latitude: '38.313515 ', Longitude: '-117.055374' } , 
+	 {State: 'New Hampshire', Population: '1330608' , Latitude: '43.452492 ', Longitude: '-71.563896' } , 
+	 {State: 'New Mexico', Population: '8958013' , Latitude: '40.298904 ', Longitude: '-74.521011' } , 
+	 {State: 'NewJersey', Population: '2085109' , Latitude: '34.840515 ', Longitude: '-106.248482' } , 
+	 {State: 'NewYork', Population: '19795791' , Latitude: '42.165726 ', Longitude: '-74.948051' } , 
+	 {State: 'North Dakota', Population: '10042802' , Latitude: '35.630066 ', Longitude: '-79.806419' } , 
+	 {State: 'NorthCarolina', Population: '756927' , Latitude: '47.528912 ', Longitude: '-99.784012' } , 
+	 {State: 'Ohio', Population: '11613423' , Latitude: '40.388783 ', Longitude: '-82.764915' } , 
+	 {State: 'Oklahoma', Population: '3911338' , Latitude: '35.565342 ', Longitude: '-96.928917' } , 
+	 {State: 'Oregon', Population: '4028977' , Latitude: '44.572021 ', Longitude: '-122.070938' } , 
+	 {State: 'Pennsylvania', Population: '12802503' , Latitude: '40.590752 ', Longitude: '-77.209755' } , 
+	 {State: 'Rhode Island', Population: '1056298' , Latitude: '41.680893 ', Longitude: '-71.51178' } , 
+	 {State: 'SouthCarolina', Population: '4896146' , Latitude: '33.856892 ', Longitude: '-80.945007' } , 
+	 {State: 'SouthDakota', Population: '858469' , Latitude: '44.299782 ', Longitude: '-99.438828' } , 
+	 {State: 'Tennessee', Population: '6600299' , Latitude: '35.747845 ', Longitude: '-86.692345' } , 
+	 {State: 'Texas', Population: '27469114' , Latitude: '31.054487 ', Longitude: '-97.563461' } , 
+	 {State: 'Utah', Population: '2995919' , Latitude: '40.150032 ', Longitude: '-111.862434' } , 
+	 {State: 'Vermont', Population: '626042' , Latitude: '44.045876 ', Longitude: '-72.710686' } , 
+	 {State: 'Virginia', Population: '8382993' , Latitude: '37.769337 ', Longitude: '-78.169968' } , 
+	 {State: 'Washington', Population: '7170351' , Latitude: '47.400902 ', Longitude: '-121.490494' } , 
+	 {State: 'West Virginia', Population: '1844128' , Latitude: '38.491226 ', Longitude: '-80.954453' } , 
+	 {State: 'Wisconsin', Population: '5771337' , Latitude: '44.268543 ', Longitude: '-89.616508' } , 
+	 {State: 'Wyoming', Population: '586107' , Latitude: '42.755966 ', Longitude: '-107.30249' } , 
 ];
+
+//Adding latitude and longitude to main datasets
+
+var addLongLat = function (dataset){
+	dataset.forEach(function(d) {
+		var swtch = 0 //switch
+		var q = 0 //loop index
+		while (swtch == 0){
+			if (stateData[q].State == d.State) {
+					d.Latitude = stateData[q].Latitude
+					d.Longitude = stateData[q].Longitude
+					swtch = 1
+			} else {q = q+1}}
+	})
+}
+
+addLongLat(humanData)
+addLongLat(avianData)
 
 var totalPop = 250442956;
 
@@ -291,43 +330,48 @@ var filterStrain = function(d,Strain) { // change to map graphic
 	
 //Stats//Graph 1: The Map....
 
-var graph1Stats = function(d, stateData){
-	var minCollectionDate = 1487785065794;
-    var maxEndDate = 0;
-   	var i = 0;
-    var k = d.length;
-    for(i;i<k;i++){
-    	var currentCollectionDate = d[i].CollectionDate;
-      var currentEndDate = d[i].endDate;
-      if(currentCollectionDate < minCollectionDate){
-      	minCollectionDate = currentCollectionDate;
-      }
-      if(currentEndDate > maxEndDate){
-      	maxEndDate = currentEndDate;
-      } else{
-      	continue;
-      }
-    }
-    var oneData = [];
-    var j = 0;
-    var l = stateData.length
-    for (j; j < l; j++){
-    	var searchingState = stateData[j].State;
-       var count = 0;
-       for(minCollectionDate; minCollectionDate < maxEndDate; minCollectionDate++){
-         var i = 0;
-         for(i;i<k;i++){
-           if((d[i].CollectionDate < minCollectionDate) && (d[i].endDate > minCollectionDate)){
-             	if(d[i].State = searchingState){
-              	count = count+1;
-           		}
-           }
-           continue;
-         }
-         oneData.push({Date: minCollectionDate, State: searchingState, Latitude: stateData[j].Latitude, Longitude: stateData.Longitude, Value: count });
-         continue;
-        } 
-        }
+var graph1Stats = function(dataset){
+	var d = dataset
+	
+	d.sort(function(a, b) {
+    return a.CollectionDate - b.CollectionDate;
+	})
+
+	visitedStates = [];
+	stateTracker = [];
+	oneData = [];
+	
+	for (i=0;i<d.length;i++){
+		if (visitedStates.includes(d[i].State)) {
+			var b = 0 //switch
+			var t = 0 //loop index
+			while (b == 0){
+				if (stateTracker[t].State == d[i].State) {
+						stateTracker[t] = {	State: stateTracker[t].State, 
+											Count:(stateTracker[t].Count + 1)
+											}
+						oneData.push({	Date: d[i].CollectionDate, 
+										State: d[i].State, 
+										Latitude: d[i].Latitude,
+										Longitude: d[i].Longitude,
+										Count: stateTracker[t].Count
+										})
+						b = 1
+				} else {t = t+1}}
+		}else {
+			oneData.push({	Date: d[i].CollectionDate, 
+							State: d[i].State, 
+							Latitude: d[i].Latitude,
+							Longitude: d[i].Longitude,
+							Count: 1
+							})
+			stateTracker.push({	State: d[i].State, 
+								Count: 1
+								})
+			visitedStates.push(d[i].State);
+			}
+	}
+	
 	return oneData;
 }
 
@@ -369,11 +413,11 @@ var graph2Stats = function(human,avian) {
       	maxEndDateA = currentEndDate;
       } 
     }
-/*
+
 	//Choose the stricter values
 	var minCollectionDate = Math.max(minCollectionDateH,minCollectionDateA)
 	var maxEndDate = Math.min(maxEndDateH,maxEndDateA);
-	*/
+	
     var twoData = [];//both
 	var twoDataH = [];//human
 	var twoDataA = [];//avian
@@ -521,23 +565,78 @@ var graph5Stats = function (d) {
 
 
 //Graph//Graph 1: The Map...	
-var width = 960,
-    height = 500;
 
-var projection = d3.geoAlbersUsa();
+var graph1a = SVG.append("g");
+var graph1b = SVG.append("g");
+
+var dataset1H = graph1Stats(sharedHuman)
+var dataset1A = graph1Stats(sharedAvian)
+
+var projection = d3.geoAlbersUsa()
 var path = d3.geoPath()
     .projection(projection);
 
 d3.json("us.json", function(error, us) {
 
-  SVG.append("path")
-      .attr("class", "states")
-	  .attr('transform','translate(50,100)')
-      .datum(topojson.feature(us, us.objects.states))
-      .attr("d", path);
+var countScale = d3.scaleLinear()
+		.domain([1,500])
+		.range([2,50]);
 
-  
+	graph1a.append("path")
+		.attr("class", "states")
+		.attr('transform','translate(50,100)')
+		.datum(topojson.feature(us, us.objects.states))
+		.attr("d", path);
+		
+	graph1a.selectAll('mapCases')
+		.data(dataset1H)
+        .enter()
+		.append('circle')
+		.style('opacity', 0)
+		.attr('r',3)		
+        .attr('fill', 'black')
+		.attr("transform", function(d) {
+				var latlong = projection([d.Longitude,d.Latitude]);
+				return "translate(" + [latlong[0]+50,latlong[1]+100] + ")";})
+		.on('click',function(d) {console.log(d.Count)})
+	graph1a.selectAll("circle")
+		.transition()
+		.style('opacity', 1)
+		.attr("r", function(d) { return countScale(d.Count);})
+		.duration(750)
+		.delay(function(d, i) { return (i +1)* 10; })
+		.transition()
+		.attr('stroke', 'yellow')
+		.duration(250)
+		.transition()
+		.attr('stroke', 'none')
+		.duration(250)
+
+	graph1b.selectAll('mapCases')
+		.data(dataset1A)
+        .enter()
+		.append('circle')
+		.style('opacity', 0)
+		.attr('r',3)		
+        .attr('fill', 'red')
+		.attr("transform", function(d) {
+				var latlong = projection([d.Longitude,d.Latitude]);
+				return "translate(" + [latlong[0]+50,latlong[1]+100] + ")";})
+	graph1b.selectAll("circle")
+		.transition()
+		.style('opacity', 1)
+		.attr("r", function(d) { return countScale(d.Count);})
+		.duration(750)
+		.delay(function(d, i) { return (i +1)* 10; })
+		.transition()
+		.attr('stroke', 'yellow')
+		.duration(250)
+		.transition()
+		.attr('stroke', 'none')
+		.duration(250)
 });
+
+
 
 
 //Graph//Graph 2: Quantity of Infections
@@ -1059,6 +1158,17 @@ var datasetA = graph5Stats(filteredA)
 	
 })
 })
+
+/*
+References
+
+Place markers:
+http://stackoverflow.com/questions/21397608/put-markers-to-a-map-generated-with-topojson-and-d3-js
+
+Delay markers: 
+http://website.education.wisc.edu/~swu28/d3t/concept.html
+
+*/
 
 	</script>
 </body>
