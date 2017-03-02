@@ -260,7 +260,7 @@ var addLongLat = function (dataset){
 
 var totalPop = 250442956;
 
-var makeShareData = function(d,aux) { //Only strains shared with humans
+var makeShareData = function(d) { //Only strains shared with humans
 		var i = 0; 
         var k = d.length;
 		
@@ -272,7 +272,25 @@ var makeShareData = function(d,aux) { //Only strains shared with humans
 				|| currentStrain.toUpperCase() == "H3".toUpperCase() 
 				|| currentStrain.toUpperCase() == "H3N2".toUpperCase() 
 				||currentStrain.toUpperCase() == "HXNX".toUpperCase() 
-				//|| currentStrain.toUpperCase() == "-N/A-".toUpperCase()
+				) {
+            	newDataset.push(d[i]);
+				}
+			}
+				
+		return newDataset;
+	}
+var makeExclude = function(d) { //Only strains shared with humans
+		var i = 0; 
+        var k = d.length;
+		
+        var newDataset = []; //Our filtered dataset
+		
+        for(i; i<k; i++) {
+            var currentStrain = d[i].Subtype;
+            if (currentStrain.toUpperCase() !== "H1N1".toUpperCase() 
+				&& currentStrain.toUpperCase() !== "H3".toUpperCase() 
+				&& currentStrain.toUpperCase() !== "H3N2".toUpperCase() 
+				&& currentStrain.toUpperCase() !== "HXNX".toUpperCase() 
 				) {
             	newDataset.push(d[i]);
 				}
@@ -287,7 +305,7 @@ addLongLat(mammalData)
 
 var sharedHuman = makeShareData(humanData)
 var sharedAvian = makeShareData(avianData)
-var sharedAvian = makeShareData(mammalData)
+var sharedMammal = makeShareData(mammalData)
 
 //sort by date
 humanData.sort(function(a, b) {
@@ -304,77 +322,7 @@ mammalData.sort(function(a, b) {
 
 
 //*************************************FILTERS****************************************************
-
-// state filter 
-var filterState = function(d,State) { 
-
-        var i = 0; 
-        var k = d.length;
-		
-        var newDataset = []; //Our filtered dataset
-		
-        for(i; i<k; i++) {
-            var currentState = d[i].State;
-            if (currentState == State) {
-            	newDataset.push(d[i]);
-				}
-			}
-			return newDataset;
-	}
  
-//  Gender Filter 
-var filterGender =  function(d,Gender) { 
-
-        var i = 0; 
-        var k = d.length;
-		
-        var newDataset = []; //Our filtered dataset
-		
-        for(i; i<k; i++) {
-            var currentGender = d[i].Gender;
-            if (currentGender == Gender) {
-            	newDataset.push(d[i]);
-				}
-			}
-			return newDataset;
-	}  
-  
- // Symptom filter   for this to work we will need to determine if they have symptoms earlier and set it to a boolean <- 1 is symptotmatic
-var filterSymptoms = function(d,Symptoms) { 
-        var i = 0; 
-        var k = d.length;
-		
-        var newDataset = []; //Our filtered dataset
-		
-        for(i; i<k; i++) {
-            var currentSymptoms = d[i].Symptoms;
-            if (currentSymptoms == 1) {
-            	newDataset.push(d[i]);
-				}
-			}
-			return newDataset;
-	}
- 
-  
-// age filter 
-
-var filterAge =  function(d,ageIndex) { // can use age index  
-
-    	var minAge = ageIndex*5;
-        var maxAge = minAge + 4; 
-        var i = 0; 
-        var k = d.length;
-        var newDataset = []; //Our filtered dataset
-        for(i; i<k; i++) {
-        	var currentAge = d[i].Age
-					if(currentAge >= minAge) {
-							if(minAge >= 100) {newDataset.push(d[i]);}
-              else if (currentAge <= maxAge) {newDataset.push(d[i]);}
-              }
-        }
-		return newDataset;
-   	}
-  
 // Strain filter 
 var filterStrain = function(d,Strain) { // change to map graphic 
 
@@ -449,16 +397,16 @@ var data = []
 	
 	}
 	
-var graph2Stats = function(d,aux1,aux2) {
-	var humanRange = makeRange(d)
-	var avianRange = makeRange(aux1)
-	var mammalRange = makeRange(aux2)
+	var humanRange = makeRange(humanData)
+	var avianRange = makeRange(avianData)
+	var mammalRange = makeRange(mammalData)
 	
 	//Choose the stricter values
 	var minCollectionDate = Math.max(humanRange[0],avianRange[0],mammalRange[0])
 	var maxEndDate = Math.min(humanRange[1],avianRange[1],mammalRange[1]);
 	
-	
+var graph2Stats = function(d) {
+		
     var twoData = [];//both
 	
 	//Find count of contagious at date
@@ -479,26 +427,13 @@ var graph2Stats = function(d,aux1,aux2) {
 
 //Stats//Graph 3: Percent Infected compared to Symptomatic Infection
 var graph3Stats = function(d,Population) {
-	var minCollectionDate = 1487785065794;
-    var maxEndDate = 0;
-    var i = 0;
-    var k = d.length;
-    for(i;i<k;i++){
-    	var currentCollectionDate = d[i].CollectionDate;
-      var currentEndDate = d[i].EndDate;
-      if(currentCollectionDate < minCollectionDate){
-      	minCollectionDate = currentCollectionDate;
-      }
-      if(currentEndDate > maxEndDate){
-      	maxEndDate = currentEndDate;
-      } 
-    }
+
     var threeData = [];
 	var count = 0;
 	var symptomCounter = 0;
     for(currentDate = minCollectionDate; currentDate < maxEndDate; currentDate++){
 		var i = 0;
-      for(i;i<k;i++){
+      for(i;i<d.length;i++){
       	if((d[i].CollectionDate <= currentDate) && (d[i].EndDate >= currentDate)){
         	count = count+1; 		
           if(d[i].Symptoms == 1){
@@ -712,40 +647,6 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		.attr('stroke','blue')
 		.attr('stroke-width',2)
 		
-		/*
-		
-		graph2a.selectAll('lineChart')
-		.data(dataset2[0])
-        .enter()
-		.append('circle')
-        .attr('transform','translate(500,800)')
-        .attr('cy',function (d) {
-                    return yScale2(d.Value);
-                    })
-        .attr('cx',function (d) {
-                    return xScale2(d.Date);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'black')
-		.on('click',function (d) {console.log(d.Date)})
-
-			
-		graph2b.selectAll('lineChart')
-		.data(dataset2[1])
-        .enter()
-		.append('circle')
-        .attr('transform','translate(500,800)')
-        .attr('cy',function (d) {
-                    return yScale2(d.Value);
-                    })
-        .attr('cx',function (d) {
-                    return xScale2(d.Date);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'red')
-		.on('click',function (d) {console.log(d.Date)})
-
-	*/
 
 
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
@@ -797,44 +698,6 @@ var graph3b = SVG.append("g");
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
-		
-		/*
-		graph3a.selectAll('lineChart')
-		.data(dataset3)
-        .enter()
-		.append('circle')
-        .attr('transform','translate(600,800)')
-        .attr('cy',function (d) {
-                    return yScale3(d.SymptomCount);
-                    })
-        .attr('cx',function (d) {
-                    return xScale3(d.Date);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'red')
-		.on("click", function(d){
-			console.log(d.Date)
-			console.log(d.SymptomCount)
-			})
-				
-		graph3b.selectAll('lineChart')
-		.data(dataset3)
-        .enter()
-		.append('circle')
-        .attr('transform','translate(600,800)')
-        .attr('cy',function (d) {
-                    return yScale3(d.Value);
-                    })
-        .attr('cx',function (d) {
-                    return xScale3(d.Date);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'purple')
-		.on("click", function(d){
-			console.log(d.Date)
-			console.log(d.Value)
-			})
-		*/
 
 
 //Graph//Graph 4: Percent of Infected over Age
@@ -898,24 +761,6 @@ var dataset4 = graph4Stats(humanData)
                     })
 		.attr('r',4)		
         .attr('fill', 'red')
-		.on("click", function(d){
-			var fh = filterAge(humanData,d.Index)
-			var fa = avianData
-			console.log(d.PopulationPercent)
-			console.log(d.Index*5 + " to " + (d.Index*5+4))
-			dispatch.call('graph',this,fh,fa,4)
-			graph4a.selectAll('circle')
-			.transition()
-			.attr('fill','red')
-			.attr('r',4)
-			graph4b.selectAll('circle')
-			.transition()
-			.attr('fill','black')
-			.attr('r',4)
-			d3.select(this)
-			.transition()
-			.attr('r',8)
-			})
 			
 	graph4b.selectAll('lineChart')
 		.data(ageCohorts)
@@ -930,36 +775,21 @@ var dataset4 = graph4Stats(humanData)
                     })
 		.attr('r',4)		
         .attr('fill', 'black')
-		.on("click", function(d){
-			var fh = filterAge(humanData,d.Index)
-			var fa = avianData
-			console.log(d.Age)
-			dispatch.call('graph',this,fh,fa,4)
-			graph4a.selectAll('circle')
-			.transition()
-			.attr('fill','red')
-			.attr('r',4)
-			graph4b.selectAll('circle')
-			.transition()
-			.attr('fill','black')
-			.attr('r',4)
-			d3.select(this)
-			.transition()
-			.attr('r',8)
-			})
-	
+
 
 
 //Graph//Graph 5: Infections by Strain
 var graph5a = SVG.append("g");
 var graph5b = SVG.append("g");
+var graph5c = SVG.append("g");
 
 var barDatasetH = graph5Stats(sharedHuman)
 var barDatasetA = graph5Stats(sharedAvian)
+var barDatasetM = graph5Stats(sharedMammal)
 
 	var xScale5 = d3.scaleLinear()
 		.domain([0,barDatasetH.length-1])
-		.range([0,500]);
+		.range([0,250]);
 	var yScale5 = d3.scaleLinear()
 		.domain([0,0.7])
 		.range([200,0]);
@@ -980,16 +810,19 @@ var barDatasetA = graph5Stats(sharedAvian)
 					return 200 - yScale5(d.Count/1063);
 					})
 		.attr('fill','black')
-		.attr('stroke','red')
 		.on("click", function(d){
 			var fh = filterStrain(sharedHuman,d.Strain)
 			var fa = filterStrain(sharedAvian,d.Strain)
+			var fm = filterStrain(sharedMammal,d.Strain)
 			console.log(d.Strain+"H")
-			dispatch.call('graph',this,fh,fa,5)
+			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
 			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5c.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
 			d3.select(this)
@@ -1014,16 +847,55 @@ var barDatasetA = graph5Stats(sharedAvian)
 					return 200 - yScale5(d.Count/1017);
 					})
 		.attr('fill','red')
-		.attr('stroke','black')
 		.on("click", function(d){
 			var fh = filterStrain(sharedHuman,d.Strain)
 			var fa = filterStrain(sharedAvian,d.Strain)
+			var fm = filterStrain(sharedMammal,d.Strain)
 			console.log(d.Strain+"A")
-			dispatch.call('graph',this,fh,fa,5)
+			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
 			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5c.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+		})
+		
+	graph5c.selectAll("bar")
+		.data(barDatasetM)
+		.enter()
+		.append('rect')
+		.attr('transform','translate(600,1500)')
+		.attr('x', function (d) { 
+					return xScale5(d.Index)+40;
+					})
+		.attr('y', function (d) { 
+					return yScale5(d.Count/1017);
+					})
+		.attr('width', 20)
+		.attr('height', function (d) { 
+					return 200 - yScale5(d.Count/1017);
+					})
+		.attr('fill','blue')
+		.on("click", function(d){
+			var fh = filterStrain(sharedHuman,d.Strain)
+			var fa = filterStrain(sharedAvian,d.Strain)
+			var fm = filterStrain(sharedMammal,d.Strain)
+			console.log(d.Strain+"A")
+			dispatch.call('graph',this,fh,fa,fm,5)
+			graph5a.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5c.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
 			d3.select(this)
@@ -1037,140 +909,75 @@ var dispatch = d3.dispatch('graph');
 //*************************************DISPATCHES****************************************************
 
 //Dispatch//Graph 1: The Map...	
-dispatch.on('graph.one', function(filteredH,filteredA,clicked){
+dispatch.on('graph.one', function(filteredH,filteredA, filteredM,clicked){
 	if (clicked !== 1) {
 
-	datasetH = graph1Stats(filteredH)
-	datasetA = graph1Stats(filteredA)
+	var datasetH = graph1Stats(filteredH,0,10000000000000)
+	var datasetA = graph1Stats(filteredA,0,10000000000000)
+	var datasetM = graph1Stats(filteredM,0,1000000000000)
+
+datasetH.forEach(function(d){
+	d.Count = (d.Count/d.Population)*100000;
+	})
 	
 	graph1a.selectAll('circle')
 		.data(datasetH)
 		.transition()
 		.attr('r',function (d) {
-                    return countScale(d.Count);
+                    return countScaleH(d.Count);
                     })
 		
 	graph1b.selectAll('circle')
 		.data(datasetA)
 		.transition()
 		.attr('r',function (d) {
-                    return countScale(d.Count);
+                    return countScaleA(d.Count);
                     })
-	
+					
+	graph1c.selectAll('circle')
+		.data(datasetM)
+		.transition()
+		.attr('r',function (d) {
+                    return countScaleM(d.Count);
+                    })
 	}
 })
 	
 //Dispatch//Graph 2: Quantity of Infections
-dispatch.on('graph.two', function(filteredH,filteredA,clicked){
+dispatch.on('graph.two', function(filteredH,filteredA,filteredM,clicked){
 
 if (clicked == 1 || clicked == 4 || clicked == 5) {
-var dataset = graph2Stats(filteredH,filteredA)
+
+var datasetH = graph2Stats(filteredH,filteredA,filteredM)
+var datasetA = graph2Stats(filteredA,filteredH,filteredM)
+var datasetM = graph2Stats(filteredM,filteredH,filteredA)
+
 	graph2a.selectAll('path')
-		.datum(dataset[0])
+		.datum(datasetH)
 		.transition()
 		.attr('d', line2)
 		
 	graph2b.selectAll('path')
-		.datum(dataset[1])
+		.datum(datasetA)
 		.transition()
 		.attr('d', line2)
-	/*	
-	graph2a.selectAll('circle')
-		.data(dataset[0])
+	
+	graph2c.selectAll('path')
+		.datum(datasetM)
 		.transition()
-        .attr('cy',function (d) {
-                    return yScale2(d.Value);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'black')
-		
-	graph2b.selectAll('circle')
-		.data(dataset[1])
-		.transition()
-        .attr('cy',function (d) {
-                    return yScale2(d.Value);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'red')
-		
-		*/
+		.attr('d', line2)
+	
 		}
-	})
-	
-//Dispatch//Graph 3: Percent Infected compared to Symptomatic Infection
-dispatch.on('graph.three', function(filtered,avian,clicked){
-
-var dataset = graph3Stats(filtered,totalPop)
-	
-	if (clicked !== 3) {
-	
-	graph3a.selectAll('path')
-		.datum(dataset)
-		.transition()
-		.attr('d', line3a)
-		
-	graph3b.selectAll('path')
-		.datum(dataset)
-		.transition()
-		.attr('d', line3b)
-	/*
-	graph3a.selectAll('circle')
-		.data(dataset)
-		.transition()
-        .attr('cy',function (d) {
-                    return yScale3(d.SymptomCount);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'red')
-		
-	graph3b.selectAll('circle')
-		.data(dataset)
-		.transition()
-        .attr('cy',function (d) {
-                    return yScale3(d.Value);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'purple')
-		
-		*/
-		}
-		
-	})
-	
-//Dispatch//Graph 4: Percent of Infected over Age
-dispatch.on('graph.four', function(filtered,avian,clicked){
-
-if (clicked !== 4) {
-var dataset = graph4Stats(filtered)
-
-	graph4a.selectAll('path')
-		.datum(dataset)
-		.transition()
-		.attr('d', line4a)
-			
-	graph4a.selectAll('circle')
-		.data(dataset)
-		.transition()
-        .attr('cy',function (d) {
-                    return yScale4(d.PopulationPercent);
-                    })
-		.attr('r',4)		
-		
-	graph4b.selectAll('circle')
-		.transition()
-		.attr('r',4)		
-
-	}
-	
 	})
 	
 //Dispatch//Graph 5: Infections by Strain	
-dispatch.on('graph.five', function(filteredH,filteredA,clicked){
+dispatch.on('graph.five', function(filteredH,filteredA,filteredM,clicked){
 
 if (clicked !== 5){
-
+console.log('here')
 var datasetH = graph5Stats(filteredH)
 var datasetA = graph5Stats(filteredA)
+var datasetM = graph5Stats(filteredM)
 
 	graph5a.selectAll("rect")
 		.data(datasetH)
