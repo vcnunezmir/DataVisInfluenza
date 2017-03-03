@@ -290,7 +290,8 @@ var makeExclude = function(d) { //Only strains shared with humans
             if (currentStrain.toUpperCase() !== "H1N1".toUpperCase() 
 				&& currentStrain.toUpperCase() !== "H3".toUpperCase() 
 				&& currentStrain.toUpperCase() !== "H3N2".toUpperCase() 
-				&& currentStrain.toUpperCase() !== "HXNX".toUpperCase() 
+				&& currentStrain.toUpperCase() !== "HXNX".toUpperCase()
+				&& currentStrain.toUpperCase() !== "-N/A-".toUpperCase()
 				) {
             	newDataset.push(d[i]);
 				}
@@ -306,6 +307,10 @@ addLongLat(mammalData)
 var sharedHuman = makeShareData(humanData)
 var sharedAvian = makeShareData(avianData)
 var sharedMammal = makeShareData(mammalData)
+
+var excludeHuman = makeExclude(humanData)
+var excludeAvian = makeExclude(avianData)
+var excludeMammal = makeExclude(mammalData)
 
 //sort by date
 humanData.sort(function(a, b) {
@@ -362,7 +367,8 @@ var data = []
 						count = count+1;
 					}
 				}
-		data.push({ State: searchingState, 
+		data.push({ Index: j,
+					State: searchingState, 
 					Count: count,
 					Population: stateData[j].Population,
 					Latitude: stateData[j].Latitude, 
@@ -495,16 +501,27 @@ var graph5Stats = function (d) {
 			strainsVisited.push(d[i].Subtype);
 			}
 	}
-		
+	var sorterC = 4	
 	var sorter = function (s) {
 		if  (s.toUpperCase() == "H1N1".toUpperCase()){return 1}else if
 			(s.toUpperCase() == "H3".toUpperCase()){return 2}else if
 			(s.toUpperCase() == "H3N2".toUpperCase()){return 0}else if
 			(s.toUpperCase() == "HXNX".toUpperCase()){return 3}else
-			{return 4}
+			{sorterC = sorterC + 1
+			return sorterC}
 			}
-	for (i=0;i<strainData.length;i++){
+		
+	strainData.sort(function(a, b) {
+    return b.Count - a.Count;
+	});
+	var tb = 0
+	var i = 0
+	while (i<strainData.length){
+		if (sorterC < 18) {
 		strainData[i] = {Index: sorter(strainData[i].Strain) , Strain: strainData[i].Strain, Count: strainData[i].Count}
+		i = i+1}else {
+		strainData.splice(i,strainData.length-i)
+		i = strainData.length}
 		}
 	strainData.sort(function(a, b) {
     return a.Index - b.Index;
@@ -782,20 +799,36 @@ var dataset4 = graph4Stats(humanData)
 var graph5a = SVG.append("g");
 var graph5b = SVG.append("g");
 var graph5c = SVG.append("g");
+var graph5e = SVG.append("g");
+var graph5f = SVG.append("g");
+var graph5d = SVG.append("g");
 
-var barDatasetH = graph5Stats(sharedHuman)
-var barDatasetA = graph5Stats(sharedAvian)
-var barDatasetM = graph5Stats(sharedMammal)
+var barDatasetHS = graph5Stats(sharedHuman) //human shared
+var barDatasetAS = graph5Stats(sharedAvian) // avian shared 
+var barDatasetMS = graph5Stats(sharedMammal) //mammal shared
+
+var barDatasetHE = graph5Stats(excludeHuman) //human excluding shared
+var barDatasetAE = graph5Stats(excludeAvian) // avian excluding shared
+var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 
 	var xScale5 = d3.scaleLinear()
-		.domain([0,barDatasetH.length-1])
+		.domain([0,barDatasetHS.length-1])
 		.range([0,250]);
+	var xScale5b = d3.scaleLinear()
+		.domain([0,barDatasetHE.length-1])
+		.range([0,100]);
+	var xScale5c = d3.scaleLinear()
+		.domain([0,barDatasetAE.length-1])
+		.range([0,300]);
+	var xScale5d = d3.scaleLinear()
+		.domain([0,barDatasetME.length-1])
+		.range([0,25]);
 	var yScale5 = d3.scaleLinear()
 		.domain([0,0.7])
 		.range([200,0]);
 	
 	graph5a.selectAll("bar")
-		.data(barDatasetH)
+		.data(barDatasetHS)
 		.enter()
 		.append('rect')
 		.attr('transform','translate(600,1500)')
@@ -825,6 +858,15 @@ var barDatasetM = graph5Stats(sharedMammal)
 			graph5c.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5f.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
 			d3.select(this)
 			.transition()
 			.style('opacity',1)
@@ -832,7 +874,7 @@ var barDatasetM = graph5Stats(sharedMammal)
 		
 	
 	graph5b.selectAll("bar")
-		.data(barDatasetA)
+		.data(barDatasetAS)
 		.enter()
 		.append('rect')
 		.attr('transform','translate(600,1500)')
@@ -862,13 +904,22 @@ var barDatasetM = graph5Stats(sharedMammal)
 			graph5c.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5f.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
 			d3.select(this)
 			.transition()
 			.style('opacity',1)
 		})
 		
 	graph5c.selectAll("bar")
-		.data(barDatasetM)
+		.data(barDatasetMS)
 		.enter()
 		.append('rect')
 		.attr('transform','translate(600,1500)')
@@ -898,15 +949,203 @@ var barDatasetM = graph5Stats(sharedMammal)
 			graph5c.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5f.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
 			d3.select(this)
 			.transition()
 			.style('opacity',1)
 		})
 		
-var dispatch = d3.dispatch('graph');
+	graph5d.selectAll("bar")
+		.data(barDatasetHE)
+		.enter()
+		.append('rect')
+		.attr('transform','translate(600,1400)')
+		.attr('x', function (d) { 
+					return xScale5b(d.Index);
+					})
+		.attr('y', function (d) { 
+					return yScale5(d.Count/1063);
+					})
+		.attr('width', 20)
+		.attr('height', function (d) { 
+					return 200 - yScale5(d.Count/1063);
+					})
+		.attr('fill','black')
+		.on("click", function(d){
+			var fh = filterStrain(excludeHuman,d.Strain)
+			var fa = filterStrain(excludeAvian,d.Strain)
+			var fm = filterStrain(excludeMammal,d.Strain)
+			console.log(d.Strain+"H")
+			dispatch.call('graph',this,fh,fa,fm,5)
+			graph5a.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5c.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+		})
+		
+	
+	graph5e.selectAll("bar")
+		.data(barDatasetAE)
+		.enter()
+		.append('rect')
+		.attr('transform','translate(600,1300)')
+		.attr('x', function (d) { 
+					return xScale5c(d.Index);
+					})
+		.attr('y', function (d) { 
+					return yScale5(d.Count/1017);
+					})
+		.attr('width', 20)
+		.attr('height', function (d) { 
+					return 200 - yScale5(d.Count/1017);
+					})
+		.attr('fill','red')
+		.on("click", function(d){
+			var fh = filterStrain(excludeHuman,d.Strain)
+			var fa = filterStrain(excludeAvian,d.Strain)
+			var fm = filterStrain(excludeMammal,d.Strain)
+			console.log(d.Strain+"A")
+			dispatch.call('graph',this,fh,fa,fm,5)
+			graph5a.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5c.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5f.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+		})
+		
+	graph5f.selectAll("bar")
+		.data(barDatasetME)
+		.enter()
+		.append('rect')
+		.attr('transform','translate(600,1100)')
+		.attr('x', function (d) { 
+					return xScale5d(d.Index);
+					})
+		.attr('y', function (d) { 
+					return yScale5(d.Count/1017);
+					})
+		.attr('width', 20)
+		.attr('height', function (d) { 
+					return 200 - yScale5(d.Count/1017);
+					})
+		.attr('fill','blue')
+		.on("click", function(d){
+			var fh = filterStrain(excludeHuman,d.Strain)
+			var fa = filterStrain(excludeAvian,d.Strain)
+			var fm = filterStrain(excludeMammal,d.Strain)
+			console.log(d.Strain+"A")
+			dispatch.call('graph',this,fh,fa,fm,5)
+			graph5a.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5c.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5f.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+		})
+		
+//Graph//Graph 6: Population vs Count
 
+var graph6a = SVG.append("g");
+var graph6b = SVG.append("g");
+
+var dataset6 = graph1Stats(tempF,0,1000000000)
+
+//Scales for line graph
+	//For line chart
+	var xScale6 = d3.scaleLinear()
+		.domain([0,50])
+		.range([0,1000]);
+	var yScale6a = d3.scaleLinear()
+		.domain([0,200])
+		.range([200,0]);
+	var yScale6b = d3.scaleLinear()
+		.domain([0,40000000])
+		.range([200,0]);
+
+	var line6a = d3.line()
+		
+		.x(function(d) { 
+			return xScale6(d.Index); 
+			})
+		.y(function(d) { 
+			return yScale6a(d.Count); 
+			})
+	var line6b = d3.line()
+		
+		.x(function(d) { 
+			return xScale6(d.Index); 
+			})
+		.y(function(d) { 
+			return yScale6b(d.Population); 
+			})	
+	
+		graph6a.append('path')
+		.datum(dataset6)
+		.attr('d', line6a)
+		.attr('transform','translate(0,1100)')
+		.attr('fill','none')
+		.attr('stroke','black')
+		.attr('stroke-width',2)
+		
+		graph6b.append('path')
+		.datum(dataset6)
+		.attr('d', line6b)
+		.attr('transform','translate(0,1100)')
+		.attr('fill','none')
+		.attr('stroke','red')
+		.attr('stroke-width',2)
+		
 
 //*************************************DISPATCHES****************************************************
+
+var dispatch = d3.dispatch('graph');
 
 //Dispatch//Graph 1: The Map...	
 dispatch.on('graph.one', function(filteredH,filteredA, filteredM,clicked){
@@ -966,6 +1205,7 @@ var datasetM = graph2Stats(filteredM,filteredH,filteredA)
 		.datum(datasetM)
 		.transition()
 		.attr('d', line2)
+		
 	
 		}
 	})
