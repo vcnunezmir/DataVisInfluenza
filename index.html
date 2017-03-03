@@ -756,7 +756,7 @@ var countScaleM = d3.scaleLinear()
 					.attr("x", 700)
 					.style("text-anchor", "middle")
 					.style('fill', 'black')
-					.text(d.State + ", Count: " + (d.Count/100000)*d.Population);
+					.text(d.State + ", Count: " + Math.round((d.Count/100000)*d.Population));
 		})
 		.on('mouseout', function(d) {
 		mouseEvent1.selectAll('text')
