@@ -146,17 +146,17 @@ var stateData = [
 	 {Index: 26, State: 'Montana', Population: '1032949' , Latitude: '46.921925 ', Longitude: '-110.454353' } , 
 	 {Index: 27, State: 'Nebraska', Population: '1896190' , Latitude: '41.12537 ', Longitude: '-98.268082' } , 
 	 {Index: 28, State: 'Nevada', Population: '2890845' , Latitude: '38.313515 ', Longitude: '-117.055374' } , 
-	 {Index: 29, State: 'New Hampshire', Population: '1330608' , Latitude: '43.452492 ', Longitude: '-71.563896' } , 
-	 {Index: 30, State: 'New Mexico', Population: '8958013' , Latitude: '40.298904 ', Longitude: '-74.521011' } , 
+	 {Index: 29, State: 'NewHampshire', Population: '1330608' , Latitude: '43.452492 ', Longitude: '-71.563896' } , 
+	 {Index: 30, State: 'NewMexico', Population: '8958013' , Latitude: '40.298904 ', Longitude: '-74.521011' } , 
 	 {Index: 31, State: 'NewJersey', Population: '2085109' , Latitude: '34.840515 ', Longitude: '-106.248482' } , 
 	 {Index: 32, State: 'NewYork', Population: '19795791' , Latitude: '42.165726 ', Longitude: '-74.948051' } , 
-	 {Index: 33, State: 'North Dakota', Population: '10042802' , Latitude: '35.630066 ', Longitude: '-79.806419' } , 
+	 {Index: 33, State: 'NorthDakota', Population: '10042802' , Latitude: '35.630066 ', Longitude: '-79.806419' } , 
 	 {Index: 34, State: 'NorthCarolina', Population: '756927' , Latitude: '47.528912 ', Longitude: '-99.784012' } , 
 	 {Index: 35, State: 'Ohio', Population: '11613423' , Latitude: '40.388783 ', Longitude: '-82.764915' } , 
 	 {Index: 36, State: 'Oklahoma', Population: '3911338' , Latitude: '35.565342 ', Longitude: '-96.928917' } , 
 	 {Index: 37, State: 'Oregon', Population: '4028977' , Latitude: '44.572021 ', Longitude: '-122.070938' } , 
 	 {Index: 38, State: 'Pennsylvania', Population: '12802503' , Latitude: '40.590752 ', Longitude: '-77.209755' } , 
-	 {Index: 39, State: 'Rhode Island', Population: '1056298' , Latitude: '41.680893 ', Longitude: '-71.51178' } , 
+	 {Index: 39, State: 'RhodeIsland', Population: '1056298' , Latitude: '41.680893 ', Longitude: '-71.51178' } , 
 	 {Index: 40, State: 'SouthCarolina', Population: '4896146' , Latitude: '33.856892 ', Longitude: '-80.945007' } , 
 	 {Index: 41, State: 'SouthDakota', Population: '858469' , Latitude: '44.299782 ', Longitude: '-99.438828' } , 
 	 {Index: 42, State: 'Tennessee', Population: '6600299' , Latitude: '35.747845 ', Longitude: '-86.692345' } , 
@@ -165,7 +165,7 @@ var stateData = [
 	 {Index: 45, State: 'Vermont', Population: '626042' , Latitude: '44.045876 ', Longitude: '-72.710686' } , 
 	 {Index: 46, State: 'Virginia', Population: '8382993' , Latitude: '37.769337 ', Longitude: '-78.169968' } , 
 	 {Index: 47, State: 'Washington', Population: '7170351' , Latitude: '47.400902 ', Longitude: '-121.490494' } , 
-	 {Index: 48, State: 'West Virginia', Population: '1844128' , Latitude: '38.491226 ', Longitude: '-80.954453' } , 
+	 {Index: 48, State: 'WestVirginia', Population: '1844128' , Latitude: '38.491226 ', Longitude: '-80.954453' } , 
 	 {Index: 49, State: 'Wisconsin', Population: '5771337' , Latitude: '44.268543 ', Longitude: '-89.616508' } , 
 	 {Index: 50, State: 'Wyoming', Population: '586107' , Latitude: '42.755966 ', Longitude: '-107.30249' } 
 ];
@@ -605,9 +605,9 @@ var usData = topojson.feature(us, us.objects.states).features
 	
 	graph1a.selectAll("path")
 		.attr("class", "states")
-		.attr('transform','translate(50,100)')
 		.data(usData)
 		.enter().append("path")
+		.attr('transform','translate(50,100)')
 		.attr("d", path)
 		.attr('fill','lightgray')
 		.attr('stroke','black')

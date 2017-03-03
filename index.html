@@ -24,20 +24,24 @@ var dates = []
 avianData.forEach(function(d) {
         d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1]);
+		d.StoredDate = d.CollectionDate;
 		dates.push(d.CollectionDate)
 		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
 		d.CollectionDate = d.CollectionDate.getTime()/86400000;
 		d.EndDate = d.EndDate.getTime()/86400000;
+		
 		d.Subtype = d.Subtype.toUpperCase();
     })
 	
 mammalData.forEach(function(d) {
         d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1]);
+		d.StoredDate = d.CollectionDate;
 		dates.push(d.CollectionDate)
 		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
 		d.CollectionDate = d.CollectionDate.getTime()/86400000;
 		d.EndDate = d.EndDate.getTime()/86400000;
+		
 		d.Subtype = d.Subtype.toUpperCase();
     })
 humanData.forEach(function(d) {
@@ -49,7 +53,7 @@ humanData.forEach(function(d) {
 		d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1])
 		dates.push(d.CollectionDate)
-		
+		d.StoredDate = d.CollectionDate;		
 		
 		if ((d.Age >= 65) || (d.Age <= 10)){
     			d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
@@ -315,6 +319,11 @@ avianData.sort(function(a, b) {
 mammalData.sort(function(a, b) {
     return a.CollectionDate - b.CollectionDate;
 	});
+
+var monthScale = d3.scaleOrdinal()
+    .range(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"])
+    .domain([0,1,2,3,4,5,6,7,8,9,10,11]);
+	
 //*************************************FILTERS****************************************************
  
 // Strain filter 
@@ -332,7 +341,23 @@ var filterStrain = function(d,Strain) { // change to map graphic
 			}
 		return newDataset;
 	}  
-  
+ 
+// Date filter 
+var filterDate = function(d,Month,Year) { // change to map graphic 
+        var i = 0; 
+        var k = d.length;
+		
+        var newDataset = []; //Our filtered dataset
+		
+        for(i; i<k; i++) {
+            var currentMonth = d[i].StoredDate.getMonth();
+            var currentYear = d[i].StoredDate.getFullYear();
+            if (currentMonth == Month && currentYear == Year) {
+            	newDataset.push(d[i]);
+				}
+			}
+		return newDataset;
+	}   
 	
 //*************************************STATS****************************************************
 	
@@ -367,6 +392,9 @@ var data = []
 	var minCollectionDateH = 100000000000000;
 	var maxEndDateH = 0;
 	
+	var minStored = 0
+	var maxStored = 0
+	
 	//Find earliest and latest date in dataset
     for(i=0;i<d.length;i++){
     var currentCollectionDate = d[i].CollectionDate;
@@ -374,13 +402,15 @@ var data = []
 		
     if(currentCollectionDate < minCollectionDateH){
       	minCollectionDateH = currentCollectionDate;
+		minStored = d[i].StoredDate
       }
     if(currentEndDate > maxEndDateH){
       	maxEndDateH = currentEndDate;
+		maxStored = d[i].StoredDate
       } 
     }
 	
-	return [minCollectionDateH,maxEndDateH];
+	return [minCollectionDateH,maxEndDateH,minStored,maxStored];
 	
 	}
 	
@@ -391,9 +421,11 @@ var data = []
 	//Choose the stricter values
 	var minCollectionDate = Math.max(humanRange[0],avianRange[0],mammalRange[0])
 	var maxEndDate = Math.min(humanRange[1],avianRange[1],mammalRange[1]);
+	var minStored = Math.max(humanRange[2],avianRange[2],mammalRange[2])
+	var maxStored = Math.min(humanRange[3],avianRange[3],mammalRange[3]);
 	
 var graph2Stats = function(d) {
-		
+	var minStoredLocal = minStored;	
     var twoData = [];//both
 	
 	//Find count of contagious at date
@@ -403,10 +435,11 @@ var graph2Stats = function(d) {
 		
       for(i=0;i<d.length;i++){
       	if((d[i].CollectionDate <= currentDate) && (d[i].EndDate >= currentDate)){
+			minStoredLocal = d[i].StoredDate
         	count = count+1; 
         }
       }
-      twoData.push({Date: currentDate, Value: count });
+      twoData.push({Date: currentDate, Value: count, StoredDate: minStoredLocal});
     }
 
 	return twoData;
@@ -560,8 +593,15 @@ var borderpath2 = SVG2.append('rect')
 		.attr("width", 1070)
 		.attr("height", 270)
 		.style("stroke", bordercolor)
-		.style("fill", "none")
+		.style("fill", "white")
 		.style("stroke-width", border);
+var borderpath2 = SVG2.append('rect')
+		.attr("width", 1070)
+		.attr("height", 270)
+		.style("stroke", bordercolor)
+		.style("fill", "white")
+		.style("stroke-width", border)
+		
 var borderpath3 = SVG3.append('rect')
 		.attr("width", 560)
 		.attr("height", 370)
@@ -592,6 +632,7 @@ var dataset1H = graph1Stats(humanData,minCollectionDate,maxEndDate)
 var dataset1A = graph1Stats(avianData,minCollectionDate,maxEndDate)
 var dataset1M = graph1Stats(mammalData,minCollectionDate,maxEndDate)
 
+				
 dataset1H.forEach(function(d){
 	d.Count = (d.Count/d.Population)*100000;
 	})
@@ -622,7 +663,7 @@ var countScaleM = d3.scaleLinear()
         .attr('fill', 'black')
 		.attr("transform", function(d) {
 				var latlong = projection([d.Longitude,d.Latitude]);
-				return "translate(" + [latlong[0]+55,latlong[1]+105] + ")";})
+				return "translate(" + [latlong[0]+5,latlong[1]+5] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
 	graph1b.selectAll('mapCases')
 		.data(dataset1A)
@@ -633,7 +674,7 @@ var countScaleM = d3.scaleLinear()
         .attr('fill', 'red')
 		.attr("transform", function(d) {
 				var latlong = projection([d.Longitude,d.Latitude]);
-				return "translate(" + [latlong[0]+50,latlong[1]+100] + ")";})
+				return "translate(" + [latlong[0]+10,latlong[1]+10] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
 	
 	graph1c.selectAll('mapCases')
@@ -645,7 +686,7 @@ var countScaleM = d3.scaleLinear()
         .attr('fill', 'blue')
 		.attr("transform", function(d) {
 				var latlong = projection([d.Longitude,d.Latitude]);
-				return "translate(" + [latlong[0]+45,latlong[1]+95] + ")";})
+				return "translate(" + [latlong[0]+15,latlong[1]+15] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
 		
 		// legend
@@ -688,8 +729,8 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		//Max Date:Mar 2 2014
 		
 	var xMonths = d3.scaleBand()
-    .domain(["Apr2012","May2012","Jun2012","Aug2012","Sep2012","Oct2012","Nov2012","Dec2012",//2012
-			"Jan2013","Feb2013","Mar2013","Apr2013","May2013","Jun2013","Aug2013","Sep2013","Oct2013","Nov2013","Dec2013", //2013
+    .domain(["Apr2012","May2012","Jun2012","Jul2012","Aug2012","Sep2012","Oct2012","Nov2012","Dec2012",//2012
+			"Jan2013","Feb2013","Mar2013","Apr2013","May2013","Jun2013","Jul2013","Aug2013","Sep2013","Oct2013","Nov2013","Dec2013", //2013
 			"Jan2014","Feb2014","Mar2014"//2014
 			])
     .range([0, 1000]);	
@@ -719,6 +760,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		.attr('d', line2)
 		.attr('transform','translate(50,10)')
 		.attr('fill','none')
+		.attr('stroke-width',1)
 		.attr('stroke','red')
 		.attr('stroke-width',2)
 		
@@ -730,12 +772,17 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		.attr('stroke','blue')
 		.attr('stroke-width',2);
 		
-		SVG2.append('g').attr('transform', 'translate(50, 210)').call(d3.axisBottom(xMonths));
+		var g2ax = SVG2.append('g').attr('transform', 'translate(50, 210)').call(d3.axisBottom(xMonths));
 		SVG2.append('text')
 			.attr("x", 550)
 			.attr("y", 250)
 			.style("text-anchor", "middle")
 			.text("Date");
+			
+		g2ax.selectAll("text")
+			.attr("transform", "rotate(-10)")
+			.style("text-anchor", "middle")
+					
 		SVG2.append('g').attr('transform', 'translate(50,10)').call(d3.axisLeft(yScale2));
 		SVG2.append('text')
 			.attr("y", 20)
@@ -761,8 +808,197 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 			.style("text-anchor", "left")
 			.style('fill', 'blue')
 			.text("Non-human Mammalian Infections");
+		var mouseEvent2 = SVG2.append("g")
 		
-  
+			mouseEvent2.append('text')
+				.attr("y", 60)
+				.attr("x", 60)
+				.style("text-anchor", "middle")
+				.style('fill', 'black')
+				.text();
+	graph2a.selectAll('circle')
+		.data(dataset2H)
+        .enter()
+		.append('circle')
+        .attr('transform','translate(50,10)')
+        .attr('cy',function (d) {
+                    return yScale2(d.Value);
+                    })
+        .attr('cx',function (d) {
+                    return xScale2(d.Date);
+                    })
+		.attr('r',10)		
+        .attr('fill', 'black')
+		.style('opacity',0)
+		.on('mouseover', function(d){
+				mouseEvent2.selectAll('text')
+					.attr("y", yScale2(d.Value)+5)
+					.attr("x", xScale2(d.Date))
+					.style("text-anchor", "middle")
+					.style('fill', 'black')
+					.text(monthScale(d.StoredDate.getMonth())+ d.StoredDate.getFullYear());
+				
+				graph2a.selectAll('path')
+					.transition()
+					.attr('stroke-width',3)
+				graph2b.selectAll('path')
+					.transition()
+					.style('opacity',0.3)
+				graph2c.selectAll('path')
+					.transition()
+					.style('opacity',0.3)
+					
+		})
+		.on('mouseout',  function(d){
+				mouseEvent2.selectAll('text')
+					.text("");
+				
+				graph2a.selectAll('path')
+					.transition()
+					.attr('stroke-width',2)
+				graph2b.selectAll('path')
+					.transition()
+					.style('opacity',1)
+				graph2c.selectAll('path')
+					.transition()
+					.style('opacity',1)		
+		})
+			
+	graph2b.selectAll('circle')
+		.data(dataset2A)
+        .enter()
+		.append('circle')
+        .attr('transform','translate(50,10)')
+        .attr('cy',function (d) {
+                    return yScale2(d.Value);
+                    })
+        .attr('cx',function (d) {
+                    return xScale2(d.Date);
+                    })
+		.attr('r',10)		
+        .attr('fill', 'red')
+		.style('opacity',0)
+		.on('mouseover', function(d){
+				mouseEvent2.selectAll('text')
+					.attr("y", yScale2(d.Value)+5)
+					.attr("x", xScale2(d.Date))
+					.style("text-anchor", "middle")
+					.style('fill', 'black')
+					.text(monthScale(d.StoredDate.getMonth())+ d.StoredDate.getFullYear());
+				
+				graph2a.selectAll('path')
+					.transition()
+					.style('opacity',0.3)
+				graph2b.selectAll('path')
+					.transition()
+					.attr('stroke-width',3)
+				graph2c.selectAll('path')
+					.transition()
+					.style('opacity',0.3)
+					
+		})
+		.on('mouseout',  function(d){
+				mouseEvent2.selectAll('text')
+					.text("");
+				
+				graph2a.selectAll('path')
+					.transition()
+					.style('opacity',1)
+				graph2b.selectAll('path')
+					.transition()
+					.attr('stroke-width',2)
+				graph2c.selectAll('path')
+					.transition()
+					.style('opacity',1)					
+		})
+	
+	graph2c.selectAll('circle')
+		.data(dataset2M)
+        .enter()
+		.append('circle')
+        .attr('transform','translate(50,10)')
+        .attr('cy',function (d) {
+                    return yScale2(d.Value);
+                    })
+        .attr('cx',function (d) {
+                    return xScale2(d.Date);
+                    })
+		.attr('r',10)		
+        .attr('fill', 'blue')
+		.style('opacity',0)
+		.on('mouseover', function(d){
+				mouseEvent2.selectAll('text')
+					.attr("y", yScale2(d.Value)+5)
+					.attr("x", xScale2(d.Date))
+					.style("text-anchor", "middle")
+					.style('fill', 'black')
+					.text(monthScale(d.StoredDate.getMonth())+ d.StoredDate.getFullYear());
+				
+				graph2a.selectAll('path')
+					.transition()
+					.style('opacity',0.3)
+				graph2b.selectAll('path')
+					.transition()
+					.style('opacity',0.3)
+				graph2c.selectAll('path')
+					.transition()
+					.attr('stroke-width',3)
+				/*	
+				var fh = filterDate(humanData,d.StoredDate.getMonth(),d.StoredDate.getFullYear())
+				var fa = filterDate(avianData,d.StoredDate.getMonth(),d.StoredDate.getFullYear())
+				var fm = filterDate(mammalData,d.StoredDate.getMonth(),d.StoredDate.getFullYear())
+								
+				dispatch.call('graph',this,fh,fa,fm,2)
+				*/	
+		})
+		.on('mouseout',  function(d){
+				mouseEvent2.selectAll('text')
+					.text("");
+				
+				graph2a.selectAll('path')
+					.transition()
+					.style('opacity',1)
+				graph2b.selectAll('path')
+					.transition()
+					.style('opacity',1)
+				graph2c.selectAll('path')
+					.transition()
+					.attr('stroke-width',2)
+				/*	
+				var fh = humanData
+				var fa = avianData
+				var fm = mammalData
+								
+				dispatch.call('graph',this,fh,fa,fm,6)
+				*/	
+		})
+/*		
+var brush = SVG2.append("g")
+    .attr("class", "brush")
+    .call(d3.brushX()
+        .on("end", brushed));*/
+		
+var brush = d3.brushX()
+    .on("brush end", brushed);
+
+SVG2.append("g")
+    .attr("class", "brush")	
+	.call(brush)
+	
+function brushed() {
+   var extent = brush.extent();
+   console.log(extent[0])
+   
+  var s = d3.event.selection || xScale2.range();
+  x.domain(s.map(x2.invert, x2));
+  focus.select(".area").attr("d", area);
+  focus.select(".axis--x").call(xAxis);
+  svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
+      .scale(width / (s[1] - s[0]))
+      .translate(-s[0], 0));
+}
+
+
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
 var dataset3 = graph3Stats(humanData,totalPop)
 var graph3a = SVG3.append("g");
@@ -778,8 +1014,8 @@ var graph3b = SVG3.append("g");
 		.range([300,0]);
 		
 		var xMonths3 = d3.scaleBand()
-    .domain(["Apr2012","Jun2012","Sep2012","Nov2012",//2012
-			"Jan2013","Mar2013","May2013","Aug2013","Oct2013","Dec2013", //2013
+    .domain(["Apr2012","Jun2012","Aug2012","Oct2012","Dec2012",//2012
+			"Feb2013","Apr2013","Jun2013","Aug2013","Oct2013","Dec2013", //2013
 			"Feb2014"//2014
 			])
     .range([0, 500]);
@@ -808,7 +1044,7 @@ var graph3b = SVG3.append("g");
 		.attr('d', line3a)
 		.attr('transform','translate(50,10)')
 		.attr('fill','none')
-		.attr('stroke','red')
+		.attr('stroke','violet')
 		.attr('stroke-width',2)
 		
 		graph3b.append('path')
@@ -819,8 +1055,13 @@ var graph3b = SVG3.append("g");
 		.attr('stroke','black')
 		.attr('stroke-width',2)
 		
-		SVG3.append('g').attr('transform', 'translate(50, 310)').call(d3.axisBottom(xMonths3));
+		var axMonth = SVG3.append('g').attr('transform', 'translate(50, 310)').call(d3.axisBottom(xMonths3));
 		SVG3.append('g').attr('transform', 'translate(50, 10)').call(d3.axisLeft(yScale3));
+		
+		axMonth.selectAll("text")
+			.style("text-anchor", "middle")
+			.attr("transform", "rotate(-10)")
+		
 		SVG3.append('text')
 			.attr("x", 300)
 			.attr("y", 350)
@@ -839,7 +1080,7 @@ var graph3b = SVG3.append("g");
 			.attr("y", 50)
 			.attr("x", 400)
 			.style("text-anchor", "middle")
-			.style("fill", "red")
+			.style("fill", "violet")
 			.text("Percent of Infected with Symptoms");
 		SVG3.append('text')
 			.attr("y", 70)
@@ -888,7 +1129,7 @@ var dataset4 = graph4Stats(humanData)
 		.attr('d', line4a)
 		.attr('transform','translate(50,10)')
 		.attr('fill','none')
-		.attr('stroke','red')
+		.attr('stroke','violet')
 		.attr('stroke-width',2)
 		
 		graph4b.append('path')
@@ -912,7 +1153,7 @@ var dataset4 = graph4Stats(humanData)
                     return xScale4(d.Index);
                     })
 		.attr('r',4)		
-        .attr('fill', 'red')
+        .attr('fill', 'violet')
 			
 	graph4b.selectAll('lineChart')
 		.data(ageCohorts)
@@ -949,7 +1190,7 @@ var dataset4 = graph4Stats(humanData)
 			.attr("y", 50)
 			.attr("x", 400)
 			.style("text-anchor", "middle")
-			.style("fill", "red")
+			.style("fill", "violet")
 			.text("Percent of Infected in Age Group");
 		SVG4.append('text')
 			.attr("y", 70)
@@ -1331,12 +1572,16 @@ barDatasetME.forEach(function(d){
 		
 	ax1.selectAll("text")
     .attr("transform", "rotate(-30)")
+	.style("text-anchor", "middle")
 	ax2.selectAll("text")
     .attr("transform", "rotate(-30)")
+	.style("text-anchor", "middle")
 	ax3.selectAll("text")
     .attr("transform", "rotate(-30)")
+	.style("text-anchor", "middle")
 	ax4.selectAll("text")
     .attr("transform", "rotate(-30)")
+	.style("text-anchor", "middle")
 	
 	SVG5.append('text')
 			.attr("x", 450)
@@ -1379,7 +1624,7 @@ barDatasetME.forEach(function(d){
 var dispatch = d3.dispatch('graph');
 //Dispatch//Graph 1: The Map...	
 dispatch.on('graph.one', function(filteredH,filteredA, filteredM,clicked){
-	if (clicked !== 1) {
+	if (clicked == 2 || clicked == 5) {
 	var datasetH = graph1Stats(filteredH,0,10000000000000)
 	var datasetA = graph1Stats(filteredA,0,10000000000000)
 	var datasetM = graph1Stats(filteredM,0,1000000000000)
@@ -1412,7 +1657,7 @@ datasetH.forEach(function(d){
 	
 //Dispatch//Graph 2: Quantity of Infections
 dispatch.on('graph.two', function(filteredH,filteredA,filteredM,clicked){
-if (clicked == 1 || clicked == 4 || clicked == 5) {
+if (clicked !== 2) {
 var datasetH = graph2Stats(filteredH,filteredA,filteredM)
 var datasetA = graph2Stats(filteredA,filteredH,filteredM)
 var datasetM = graph2Stats(filteredM,filteredH,filteredA)
@@ -1439,9 +1684,20 @@ var datasetM = graph2Stats(filteredM,filteredH,filteredA)
 dispatch.on('graph.five', function(filteredH,filteredA,filteredM,clicked){
 if (clicked !== 5){
 
-var datasetH = graph5Stats(filteredH)
-var datasetA = graph5Stats(filteredA)
-var datasetM = graph5Stats(filteredM)
+var sharedHumanL = makeShareData(filteredH)
+var sharedAvianL = makeShareData(filteredA)
+var sharedMammalL = makeShareData(filteredM)
+var excludeHumanL = makeExclude(filteredH)
+var excludeAvianL = makeExclude(filteredA)
+var excludeMammalL = makeExclude(filteredM)
+
+var datasetHS = graph5Stats(sharedHumanL)
+var datasetAS = graph5Stats(sharedAvianL)
+var datasetMS = graph5Stats(sharedMammalL)
+var datasetHE = graph5Stats(excludeHumanL)
+var datasetAE = graph5Stats(excludeAvianL)
+var datasetME = graph5Stats(excludeMammalL)
+
 	graph5a.selectAll("rect")
 		.data(datasetH)
 		//.enter()
@@ -1493,6 +1749,8 @@ Delay markers:
 http://website.education.wisc.edu/~swu28/d3t/concept.html
 State ids:
 https://gist.github.com/mbostock/4090846#file-us-state-names-tsv
+Scrubbing & brushing intercation:
+http://flowingdata.com/2014/10/15/linked-small-multiples/
 */
 	</script>
 </body>
