@@ -2,7 +2,6 @@
 <html>
 
 <head>
-	<title>Assignment 4</title>
 	<script src='https://d3js.org/d3.v4.min.js'></script>
 	<script src='https://d3js.org/topojson.v2.min.js'></script>
 </head>
@@ -11,8 +10,95 @@
   fill: #ccc;
   stroke: #fff;
 }
+
+.jumbotron{
+	background-color:#F5F5DC;
+	color:white;
+}
+
+#jumTitle{
+	background-color:#E9967A;
+	color:white;
+}
+
+
+#mid{
+	background-color:#FAFAD2;
+}
+
+#bar{
+	background-color:#FAFAD2;
+}
+
+
+#conclusion{
+	background-color:#87CEFA;
+	color:white;
+}
+#title{
+font-size: 6em;
+font-family:'Bungee';
+color:#8B0000;
+}
+
 </style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link href='//fonts.googleapis.com/css?family=Bungee' rel='stylesheet'>
 <body>
+
+<div class = "container">
+<div class = "page-hear" align="center">
+<div id="jumTitle" class="jumbotron" align="center">
+
+<span id="title">Influenza Spread</span>
+
+</div>
+
+<div class="jumbotron" align="center" >
+<p>
+This first graphic is an map of the US. The dots signify an influenza infection within that state, and the size denotes the quantity of infections. As we will see in other graphics, black denotes Human, blue denotes Mammalian, and red indicates Avian. The intention behind this graphic was to show the spread of influenza across the US. It is immediately noticeable that there seem to be clusters of influenza outbreaks for the different hosts, and very little connection between outbreaks in one host and outbreaks in another host. This leads to the question of why these outbreaks are clustering geographically.
+</p>
+
+
+<div class="jumbotron" align="center" id="map">
+
+</div>
+
+<p>
+A look into the rate of infections over two years shows that for humans and birds, there is a clear connection between seasons and influenza outbreaks. The lack of a season for non-human mammals, which are mostly swine, is possibly an effect of most of those host being in conditioned farms. From this, one might wonder if these geographic clusters have less to do with isolation of a strain within a population, and more to do with geographic characteristics, such as heat and temperature. 
+</p>
+</div>
+
+<div class="jumbotron" align="center" id="mid">
+<p>
+The fifth graphic compares the quantity of infections by Strain Subtype, where the first two strains on the bar graph are those that were predicted and had vaccines produced for them. By clicking on the bars you can sort the infections shown on the map and on the line graph. By doing this, another pattern arises. Most strains that cluster towards the northern half of the country, have outbreaks during colder months, particularly December and January. In contrast, strains that cluster towards the southern half of the country, tend to have outbreaks during warmer months, particularly June and August. Once again, the pattern is less marked in non-human mammals, however, the explanation that conditioning in farms shelters livestock from seasonal effects, agrees with the emmerging theory of this analysis : That outbreaks of influenza are more related to the individual characteristics of the strains, namely their ability to grow in different environments. 
+</p>
+
+<div class="jumbotron" align="center" id="bar">
+
+</div>
+
+</div>
+
+<div class="jumbotron" align="center">
+<p>
+Further proof on this theory comes from the following two graphics. The first, displays two proportions over time. In black is the proportion of the population that has been infected with influenza. While the pink line shows the percentage of infected people with severe symptoms. Following the pink line shows a stronger connection between percentage of symptomatic patients, and time of the year, than with percentage of the population infected.
+
+The final graphic, depicts two ratios. First it shows the proportion that each age cohort represents of the population in black. Then in pink, it shows what percentage of the people with influenza belong to each age cohort. Anywhere in this graphic where the pink line is over the black line shows a high risk age group. Meaning in these regions youth and elderly, the ratio of people who have influenza is greater than the ratio for that entire group of people. This makes sense, because these groups are generally inmunocompromised, and therefore the most vulnerable. It could be interesting to see if these same groups would fare better in zones where a strain is not at its most active at that time of the year.
+</p>
+
+<div class="jumbotron" align="center" id="lines">
+
+</div>
+
+</div>
+
+<div class="jumbotron" align="center" id="conclusion">
+<h1>Conclusion</h1>
+<p>
+These visualizations show the need to further explore the characteristics of strains as they adapt to their environments. Some interesting work that could derive from this would be to map different strain's genomes to the different qualities of the areas where they cluster, such as temperature and humidity. 
+</p>
+</div>
 
 	<script>
 d3.csv('avianDataEx.csv', function(error,avianData){	
@@ -542,24 +628,24 @@ var graph5Stats = function (d) {
 var border= 4;
 var bordercolor = "black";
 			
-	var SVG1G = d3.select('body')
+	var SVG1G = d3.select("#map")
 		.append('svg')
 		.attr('width', 1000)
 		.attr('height', 600)
-		.attr('transform','scale(0.2)');
+
 		
 	var SVG1 = SVG1G.append("g")
-	//.attr('transform','scale(0.5)');
+	.attr('transform','scale(0.85)');
 		
-	var SVG2G = d3.select('body')
+	var SVG2G = d3.select("#map")
 		.append('svg')
 		.attr('width', 1070)
 		.attr('height', 270)
 		
 	var SVG2 = SVG2G.append("g")
-	//.attr('transform','scale(0.5)');
+	.attr('transform','scale(0.75)');
 		
-	var SVG5G = d3.select('body')
+	var SVG5G = d3.select("#bar")
 		.append('svg')
 		.attr('width', 920)
 		.attr('height', 270)
@@ -567,7 +653,7 @@ var bordercolor = "black";
 	var SVG5 = SVG5G.append("g")
 	//.attr('transform','scale(0.5)');
 	
-	var SVG3G = d3.select('body')
+	var SVG3G =d3.select("#lines")
 		.append('svg')
 		.attr('width', 560)
 		.attr('height', 370)
@@ -575,52 +661,13 @@ var bordercolor = "black";
 	var SVG3 = SVG3G.append("g")
 	//.attr('transform','scale(0.5)');
 	
-	var SVG4G = d3.select('body')
+	var SVG4G = d3.select("#lines")
 		.append('svg')
 		.attr('width', 560)
 		.attr('height', 370)
 		
 	var SVG4 = SVG4G.append("g")
 	//.attr('transform','scale(0.5)');
-
-var borderpath1 = SVG1.append('rect')
-		.attr("width", 1000)
-		.attr("height", 600)
-		.style("stroke", bordercolor)
-		.style("fill", "none")
-		.style("stroke-width", border);
-var borderpath2 = SVG2.append('rect')
-		.attr("width", 1070)
-		.attr("height", 270)
-		.style("stroke", bordercolor)
-		.style("fill", "white")
-		.style("stroke-width", border);
-var borderpath2 = SVG2.append('rect')
-		.attr("width", 1070)
-		.attr("height", 270)
-		.style("stroke", bordercolor)
-		.style("fill", "white")
-		.style("stroke-width", border)
-		
-var borderpath3 = SVG3.append('rect')
-		.attr("width", 560)
-		.attr("height", 370)
-		.style("stroke", bordercolor)
-		.style("fill", "none")
-		.style("stroke-width", border);
-var borderpath4 = SVG4.append('rect')
-		.attr("width", 560)
-		.attr("height", 370)
-		.style("stroke", bordercolor)
-		.style("fill", "none")
-		.style("stroke-width", border);
-var borderpath5 = SVG5.append('rect')
-		.attr("width", 920)
-		.attr("height", 270)
-		.style("stroke", bordercolor)
-		.style("fill", "none")
-		.style("stroke-width", border);
-		
 
 //Graph//Graph 1: The Map...	
 
@@ -641,13 +688,13 @@ var path = d3.geoPath()
     .projection(projection);
 var countScaleH = d3.scaleLinear()
 		.domain([0,7])
-		.range([0,30]);
+		.range([0,60]);
 var countScaleA = d3.scaleLinear()
 		.domain([0,700])
-		.range([0,30]);
+		.range([0,60]);
 var countScaleM = d3.scaleLinear()
 		.domain([0,900])
-		.range([0,30]);		
+		.range([0,60]);		
 		
 	graph1a.append("path")
 		.attr("class", "states")
@@ -977,7 +1024,7 @@ var brush = SVG2.append("g")
     .attr("class", "brush")
     .call(d3.brushX()
         .on("end", brushed));*/
-		
+		/*
 var brush = d3.brushX()
     .on("brush end", brushed);
 
@@ -989,7 +1036,7 @@ function brushed() {
    var extent = brush.extent();
    console.log(extent[0])
    
-  var s = d3.event.selection || xScale2.range();
+  var s = d3.event.selection || xMonths.range();
   x.domain(s.map(x2.invert, x2));
   focus.select(".area").attr("d", area);
   focus.select(".axis--x").call(xAxis);
@@ -997,7 +1044,7 @@ function brushed() {
       .scale(width / (s[1] - s[0]))
       .translate(-s[0], 0));
 }
-
+*/
 
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
 var dataset3 = graph3Stats(humanData,totalPop)
@@ -1320,7 +1367,16 @@ barDatasetME.forEach(function(d){
 			.transition()
 			.style('opacity',1)
 		})
-		
+		.on("mouseover", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',0.5)
+			})
+		.on("mouseout", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+			})
 	
 	graph5b.selectAll("bar")
 		.data(barDatasetAS)
@@ -1370,6 +1426,17 @@ barDatasetME.forEach(function(d){
 			.transition()
 			.style('opacity',1)
 		})
+		.on("mouseover", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',0.5)
+			})
+		.on("mouseout", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+			})
+	
 		
 	graph5c.selectAll("bar")
 		.data(barDatasetMS)
@@ -1418,6 +1485,17 @@ barDatasetME.forEach(function(d){
 			.transition()
 			.style('opacity',1)
 		})
+		.on("mouseover", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',0.5)
+			})
+		.on("mouseout", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+			})
+	
 		
 	graph5d.selectAll("bar")
 		.data(barDatasetHE)
@@ -1466,7 +1544,17 @@ barDatasetME.forEach(function(d){
 			.transition()
 			.style('opacity',1)
 		})
-		
+		.on("mouseover", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',0.5)
+			})
+		.on("mouseout", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+			})
+	
 	
 	graph5e.selectAll("bar")
 		.data(barDatasetAE)
@@ -1515,7 +1603,17 @@ barDatasetME.forEach(function(d){
 			.transition()
 			.style('opacity',1)
 		})
-		
+		.on("mouseover", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',0.5)
+			})
+		.on("mouseout", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+			})
+	
 	graph5f.selectAll("bar")
 		.data(barDatasetME)
 		.enter()
@@ -1563,7 +1661,17 @@ barDatasetME.forEach(function(d){
 			.transition()
 			.style('opacity',1)
 		})
-		
+		.on("mouseover", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',0.5)
+			})
+		.on("mouseout", function(d){
+			d3.select(this)
+			.transition()
+			.style('opacity',1)
+			})
+	
 		var ax1 = SVG5.append('g').attr('transform', 'translate(50, 210)').call(d3.axisBottom(xStrainsS));
 		var ax2 = SVG5.append('g').attr('transform', 'translate(260, 210)').call(d3.axisBottom(xStrainsHE));
 		var ax3 = SVG5.append('g').attr('transform', 'translate(400, 210)').call(d3.axisBottom(xStrainsAE));
@@ -1751,8 +1859,13 @@ State ids:
 https://gist.github.com/mbostock/4090846#file-us-state-names-tsv
 Scrubbing & brushing intercation:
 http://flowingdata.com/2014/10/15/linked-small-multiples/
+Bootstrap:
+https://www.youtube.com/watch?v=gqOEoUR5RHg&ab_channel=DerekBanas
 */
 	</script>
+	
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 
 </html>
