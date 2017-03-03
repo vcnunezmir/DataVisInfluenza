@@ -20,9 +20,11 @@ d3.csv('humanDataEx.csv', function (error,humanData){
 d3.csv('mammalData.csv', function (error,mammalData){
 d3.json('us.json', function(error, us) {
 //*************************************DATASETS/DATA TRANSFORMATION****************************************************
+var dates = []
 avianData.forEach(function(d) {
         d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1]);
+		dates.push(d.CollectionDate)
 		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
 		d.CollectionDate = d.CollectionDate.getTime()/86400000;
 		d.EndDate = d.EndDate.getTime()/86400000;
@@ -31,6 +33,7 @@ avianData.forEach(function(d) {
 mammalData.forEach(function(d) {
         d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1]);
+		dates.push(d.CollectionDate)
 		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
 		d.CollectionDate = d.CollectionDate.getTime()/86400000;
 		d.EndDate = d.EndDate.getTime()/86400000;
@@ -43,6 +46,7 @@ humanData.forEach(function(d) {
 		d.CollectionDate = d.CollectionDate[0];
 		d.CollectionDate = d.CollectionDate.split("/");
 		d.CollectionDate = new Date(d.CollectionDate[2],d.CollectionDate[0]-1,d.CollectionDate[1])
+		dates.push(d.CollectionDate)
 		
 		
 		if ((d.Age >= 65) || (d.Age <= 10)){
@@ -442,7 +446,7 @@ var graph4Stats = function(d) {
           	counter = counter + 1;
           }
       }
-      popPercent = counter/h;
+      popPercent = 100*(counter/h);
       fourData.push({Index: i, PopulationPercent: popPercent});
   }
   return fourData;
@@ -504,9 +508,9 @@ var graph5Stats = function (d) {
 var graph1a = SVG.append("g");
 var graph1b = SVG.append("g");
 var graph1c = SVG.append("g");
-var dataset1H = graph1Stats(humanData,0,10000000000000)
-var dataset1A = graph1Stats(avianData,0,10000000000000)
-var dataset1M = graph1Stats(mammalData,0,1000000000000)
+var dataset1H = graph1Stats(humanData,minCollectionDate,maxEndDate)
+var dataset1A = graph1Stats(avianData,minCollectionDate,maxEndDate)
+var dataset1M = graph1Stats(mammalData,minCollectionDate,maxEndDate)
 dataset1H.forEach(function(d){
 	d.Count = (d.Count/d.Population)*100000;
 	})
@@ -563,6 +567,7 @@ var countScaleM = d3.scaleLinear()
 				var latlong = projection([d.Longitude,d.Latitude]);
 				return "translate(" + [latlong[0]+45,latlong[1]+95] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
+		
 //Graph//Graph 2: Quantity of Infections
 var graph2a = SVG.append("g");
 var graph2b = SVG.append("g");
@@ -570,14 +575,27 @@ var graph2c = SVG.append("g");
 var dataset2H = graph2Stats(humanData,avianData,mammalData)
 var dataset2A = graph2Stats(avianData,humanData,mammalData)
 var dataset2M = graph2Stats(mammalData,humanData,avianData)
+
 //Scales for line graph
 	//For line chart
 	var xScale2 = d3.scaleLinear()
-		.domain([15300,16200])
+		.domain([minCollectionDate,maxEndDate])
 		.range([0,1000]);
 	var yScale2 = d3.scaleLinear()
-		.domain([0,200])
+		.domain([0,280])
 		.range([200,0]);
+		
+		//Min Date: Mar 13 2012
+		//Max Date:Mar 2 2014
+		
+	var xMonths = d3.scaleBand()
+    .domain(["Apr2012","May2012","Jun2012","Aug2012","Sep2012","Oct2012","Nov2012","Dec2012",//2012
+			"Jan2013","Feb2013","Mar2013","Apr2013","May2013","Jun2013","Aug2013","Sep2013","Oct2013","Nov2013","Dec2013", //2013
+			"Jan2014","Feb2014","Mar2014"//2014
+			])
+    .range([0, 1000]);	
+		
+		console.log
 	var line2 = d3.line()
 		
 		.x(function(d) { 
@@ -591,7 +609,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2a.append('path')
 		.datum(dataset2H)
 		.attr('d', line2)
-		.attr('transform','translate(0,800)')
+		.attr('transform','translate(50,800)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
@@ -599,7 +617,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2b.append('path')
 		.datum(dataset2A)
 		.attr('d', line2)
-		.attr('transform','translate(0,800)')
+		.attr('transform','translate(50,800)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -607,23 +625,47 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2c.append('path')
 		.datum(dataset2M)
 		.attr('d', line2)
-		.attr('transform','translate(0,800)')
+		.attr('transform','translate(50,800)')
 		.attr('fill','none')
 		.attr('stroke','blue')
 		.attr('stroke-width',2)
+		
+	SVG.append('g').attr('transform', 'translate(50, 1000)').call(d3.axisBottom(xMonths));
+		SVG.append('text')
+			.attr("x", 525)
+			.attr("y", 1040)
+			.style("text-anchor", "middle")
+			.text("Date");
+		SVG.append('g').attr('transform', 'translate(50, 800)').call(d3.axisLeft(yScale2));
+		SVG.append('text')
+			.attr("y", 20)
+			.attr("x", -900)
+			.attr("transform", "rotate(-90)")
+			.style("text-anchor", "middle")
+			.text("Quantity of Contagious Infections")
 		
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
 var dataset3 = graph3Stats(humanData,totalPop)
 var graph3a = SVG.append("g");
 var graph3b = SVG.append("g");
+
+
 //Scales for line graph
 	//For line chart
 	var xScale3 = d3.scaleLinear()
-		.domain([13000,16500])
+		.domain([minCollectionDate,maxEndDate])
 		.range([0,500]);
 	var yScale3 = d3.scaleLinear()
-		.domain([0,38])
-		.range([500,0]);
+		.domain([0,10])
+		.range([350,0]);
+		
+		var xMonths3 = d3.scaleBand()
+    .domain(["Apr2012","Jun2012","Sep2012","Nov2012",//2012
+			"Jan2013","Mar2013","May2013","Aug2013","Oct2013","Dec2013", //2013
+			"Feb2014"//2014
+			])
+    .range([0, 500]);
+		
 	var line3a = d3.line()
 		
 		.x(function(d) { 
@@ -646,7 +688,7 @@ var graph3b = SVG.append("g");
 		graph3a.append('path')
 		.datum(dataset3)
 		.attr('d', line3a)
-		.attr('transform','translate(1000,800)')
+		.attr('transform','translate(600,1350)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -654,22 +696,59 @@ var graph3b = SVG.append("g");
 		graph3b.append('path')
 		.datum(dataset3)
 		.attr('d', line3b)
-		.attr('transform','translate(1000,800)')
+		.attr('transform','translate(600,1350)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
+		
+		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisBottom(xMonths3));
+		SVG.append('g').attr('transform', 'translate(600, 1350)').call(d3.axisLeft(yScale3));
+		SVG.append('text')
+			.attr("x", 850)
+			.attr("y", 1740)
+			.style("text-anchor", "middle")
+			.text("Date");
+		
+		SVG.append('text')
+			.attr("y", 570)
+			.attr("x", -1550)
+			.attr("transform", "rotate(-90)")
+			.style("text-anchor", "middle")
+			.text("Percent Infected")	
+			
+		// Legend thing
+		SVG.append('text')
+			.attr("y", 1400)
+			.attr("x", 950)
+			.style("text-anchor", "middle")
+			.style("fill", "red")
+			.text("Percent of Infected with Symptoms");
+		SVG.append('text')
+			.attr("y", 1420)
+			.attr("x", 950)
+			.style("text-anchor", "middle")
+			.text("Percent of Population Infected");
+		
 //Graph//Graph 4: Percent of Infected over Age
 var graph4a = SVG.append("g");
 var graph4b = SVG.append("g");
 var dataset4 = graph4Stats(humanData)
+
 //Scales for line graph
 	//For line chart
 	var xScale4 = d3.scaleLinear()
 		.domain([0,20])
 		.range([0,500]);
 	var yScale4 = d3.scaleLinear()
-		.domain([0,0.3])
-		.range([500,1]);
+		.domain([0,20])
+		.range([350,0]);
+		
+	var xAges = d3.scaleBand()
+    .domain(["5-9","15-19","25-29","35-39","45-49",
+			"55-59","65-69","75-79","85-89","95-99"
+			])
+    .range([0, 500]);
+		
   var line4a = d3.line()
 		.x(function(d) { 
 			return xScale4(d.Index); 
@@ -683,13 +762,13 @@ var dataset4 = graph4Stats(humanData)
 			return xScale4(d.Index); 
 			})
 		.y(function(d) { 
-			return yScale4(d.Percent); 
+			return yScale4(d.Percent*100); 
 			})
 			
 		graph4a.append('path')
 		.datum(dataset4)
 		.attr('d', line4a)
-		.attr('transform','translate(50,1200)')
+		.attr('transform','translate(50,1350)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -697,7 +776,7 @@ var dataset4 = graph4Stats(humanData)
 		graph4b.append('path')
 		.datum(ageCohorts)
 		.attr('d', line4b)
-		.attr('transform','translate(50,1200)')
+		.attr('transform','translate(50,1350)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
@@ -707,7 +786,7 @@ var dataset4 = graph4Stats(humanData)
 		.data(dataset4)
         .enter()
 		.append('circle')
-        .attr('transform','translate(50,1200)')
+        .attr('transform','translate(50,1350)')
         .attr('cy',function (d) {
                     return yScale4(d.PopulationPercent);
                     })
@@ -721,15 +800,45 @@ var dataset4 = graph4Stats(humanData)
 		.data(ageCohorts)
         .enter()
 		.append('circle')
-        .attr('transform','translate(50,1200)')
+        .attr('transform','translate(50,1350)')
         .attr('cy',function (d) {
-                    return yScale4(d.Percent);
+                    return yScale4(d.Percent*100);
                     })
         .attr('cx',function (d) {
                     return xScale4(d.Index);
                     })
 		.attr('r',4)		
         .attr('fill', 'black')
+		
+		SVG.append('g').attr('transform', 'translate(50, 1700)').call(d3.axisBottom(xAges));
+		SVG.append('g').attr('transform', 'translate(50, 1350)').call(d3.axisLeft(yScale4));
+		
+		SVG.append('text')
+			.attr("x", 300)
+			.attr("y", 1740)
+			.style("text-anchor", "middle")
+			.text("Age Group");
+		
+		SVG.append('text')
+			.attr("y", 20)
+			.attr("x", -1550)
+			.attr("transform", "rotate(-90)")
+			.style("text-anchor", "middle")
+			.text("Percentage (%)")
+			
+		// Legend thing
+		SVG.append('text')
+			.attr("y", 1400)
+			.attr("x", 400)
+			.style("text-anchor", "middle")
+			.style("fill", "red")
+			.text("Percent of Infected in Age Group");
+		SVG.append('text')
+			.attr("y", 1420)
+			.attr("x", 400)
+			.style("text-anchor", "middle")
+			.text("Percent of Population in Age Group");
+		
 //Graph//Graph 5: Infections by Strain
 var graph5a = SVG.append("g");
 var graph5b = SVG.append("g");
@@ -1021,6 +1130,22 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			.transition()
 			.style('opacity',1)
 		})
+		
+		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		
+		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		
+		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		
+		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		
+		
+		
+		
 		
 //*************************************DISPATCHES****************************************************
 var dispatch = d3.dispatch('graph');
