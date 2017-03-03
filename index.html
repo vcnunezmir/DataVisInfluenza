@@ -58,8 +58,9 @@ color:#8B0000;
 <p>
 This first graphic is an map of the US. The dots signify an influenza infection within that state, and the size denotes the quantity of infections. As we will see in other graphics, black denotes Human, blue denotes Mammalian, and red indicates Avian. The intention behind this graphic was to show the spread of influenza across the US. It is immediately noticeable that there seem to be clusters of influenza outbreaks for the different hosts, and very little connection between outbreaks in one host and outbreaks in another host. This leads to the question of why these outbreaks are clustering geographically.
 </p>
-
-
+<form id="clearButton" >
+<button onclick="clear()">Clear filter</button>  
+</form>
 <div class="jumbotron" align="center" id="map">
 
 </div>
@@ -74,6 +75,7 @@ A look into the rate of infections over two years shows that for humans and bird
 The fifth graphic compares the quantity of infections by Strain Subtype, where the first two strains on the bar graph are those that were predicted and had vaccines produced for them. By clicking on the bars you can sort the infections shown on the map and on the line graph. By doing this, another pattern arises. Most strains that cluster towards the northern half of the country, have outbreaks during colder months, particularly December and January. In contrast, strains that cluster towards the southern half of the country, tend to have outbreaks during warmer months, particularly June and August. Once again, the pattern is less marked in non-human mammals, however, the explanation that conditioning in farms shelters livestock from seasonal effects, agrees with the emmerging theory of this analysis : That outbreaks of influenza are more related to the individual characteristics of the strains, namely their ability to grow in different environments. 
 </p>
 
+<button onclick="clear()">Clear filter</button> 
 <div class="jumbotron" align="center" id="bar">
 
 </div>
@@ -444,7 +446,34 @@ var filterDate = function(d,Month,Year) { // change to map graphic
 			}
 		return newDataset;
 	}   
-	
+
+var clear = function(){
+			graph5a.selectAll('rect')
+			.transition()
+			.style('opacity',1)
+			graph5b.selectAll('rect')
+			.transition()
+			.style('opacity',1)
+			graph5c.selectAll('rect')
+			.transition()
+			.style('opacity',1)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',1)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',1)
+			graph5f.selectAll('rect')
+			.transition()
+			.style('opacity',1)
+
+				var fh = humanData
+				var fa = avianData
+				var fm = mammalData
+								
+				dispatch.call('graph',this,fh,fa,fm,5)
+			}
+
 //*************************************STATS****************************************************
 	
 //Stats//Graph 1: The Map....
@@ -696,6 +725,15 @@ var countScaleM = d3.scaleLinear()
 		.domain([0,900])
 		.range([0,60]);		
 		
+		var mouseEvent1 = SVG1.append("g")
+		
+			mouseEvent1.append('text')
+				.attr("y", 60)
+				.attr("x", 60)
+				.style("text-anchor", "middle")
+				.style('fill', 'black')
+				.text();
+		
 	graph1a.append("path")
 		.attr("class", "states")
 		.datum(topojson.feature(us, us.objects.states))
@@ -712,6 +750,18 @@ var countScaleM = d3.scaleLinear()
 				var latlong = projection([d.Longitude,d.Latitude]);
 				return "translate(" + [latlong[0]+5,latlong[1]+5] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
+		.on('mouseover', function(d) {
+		mouseEvent1.selectAll('text')
+					.attr("y", 50)
+					.attr("x", 700)
+					.style("text-anchor", "middle")
+					.style('fill', 'black')
+					.text(d.State + ", Count: " + (d.Count/100000)*d.Population);
+		})
+		.on('mouseout', function(d) {
+		mouseEvent1.selectAll('text')
+					.text("");
+		})
 	graph1b.selectAll('mapCases')
 		.data(dataset1A)
         .enter()
@@ -723,6 +773,18 @@ var countScaleM = d3.scaleLinear()
 				var latlong = projection([d.Longitude,d.Latitude]);
 				return "translate(" + [latlong[0]+10,latlong[1]+10] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
+		.on('mouseover', function(d) {
+		mouseEvent1.selectAll('text')
+					.attr("y", 50)
+					.attr("x", 700)
+					.style("text-anchor", "middle")
+					.style('fill', 'black')
+					.text(d.State + ", Count: " + d.Count);
+		})
+		.on('mouseout', function(d) {
+		mouseEvent1.selectAll('text')
+					.text("");
+		})
 	
 	graph1c.selectAll('mapCases')
 		.data(dataset1M)
@@ -735,7 +797,18 @@ var countScaleM = d3.scaleLinear()
 				var latlong = projection([d.Longitude,d.Latitude]);
 				return "translate(" + [latlong[0]+15,latlong[1]+15] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
-		
+		.on('mouseover', function(d) {
+		mouseEvent1.selectAll('text')
+					.attr("y", 50)
+					.attr("x", 700)
+					.style("text-anchor", "middle")
+					.style('fill', 'black')
+					.text(d.State + ", Count: " + d.Count);
+		})
+		.on('mouseout', function(d) {
+		mouseEvent1.selectAll('text')
+					.text("");
+		})
 		// legend
 		SVG1.append('text')
 			.attr("y", 400)
