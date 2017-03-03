@@ -736,35 +736,6 @@ var dataset2 = graph2Stats(sharedHuman,sharedAvian)
 		.attr('stroke','red')
 		.attr('stroke-width',2)
 		
-	/*	
-		graph2a.selectAll('lineChart')
-		.data(dataset2[0])
-        .enter()
-		.append('circle')
-        .attr('transform','translate(50,800)')
-        .attr('cy',function (d) {
-                    return yScale2(d.Value);
-                    })
-        .attr('cx',function (d) {
-                    return xScale2(d.Date);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'black')
-			
-		graph2b.selectAll('lineChart')
-		.data(dataset2[1])
-        .enter()
-		.append('circle')
-        .attr('transform','translate(50,800)')
-        .attr('cy',function (d) {
-                    return yScale2(d.Value);
-                    })
-        .attr('cx',function (d) {
-                    return xScale2(d.Date);
-                    })
-		.attr('r',4)		
-        .attr('fill', 'red')
-	*/
 
 		SVG.append('g').attr('transform', 'translate(50, 1300)').call(d3.axisBottom(xScale2));
 		SVG.append('text')

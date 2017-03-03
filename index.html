@@ -28,6 +28,7 @@ avianData.forEach(function(d) {
 		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
 		d.CollectionDate = d.CollectionDate.getTime()/86400000;
 		d.EndDate = d.EndDate.getTime()/86400000;
+		d.Subtype = d.Subtype.toUpperCase();
     })
 	
 mammalData.forEach(function(d) {
@@ -37,6 +38,7 @@ mammalData.forEach(function(d) {
 		d.EndDate = new Date (d.CollectionDate.getFullYear(),d.CollectionDate.getMonth(),d.CollectionDate.getDate()+14);
 		d.CollectionDate = d.CollectionDate.getTime()/86400000;
 		d.EndDate = d.EndDate.getTime()/86400000;
+		d.Subtype = d.Subtype.toUpperCase();
     })
 humanData.forEach(function(d) {
 		d.Age = d.Age.split(",");
@@ -101,6 +103,8 @@ humanData.forEach(function(d) {
 		if (d.Subtype == "-N/A-" || d.Subtype == "unknown"){
 			d.Subtype = "-N/A-"
 			}
+			
+		d.Subtype = d.Subtype.toUpperCase();
 })
 //More datasets 
 var ageCohorts = [
@@ -499,91 +503,80 @@ var graph5Stats = function (d) {
 	return strainData;
 }
 //*************************************GRAPHS****************************************************
-// function for justifying text 
-/*
-    function wrap( d ) {
-            var self = d3.select(this),
-                textLength = self.node().getComputedTextLength(),
-                text = self.text();
-            while ( ( textLength > self.attr('width') )&& text.length > 0) {
-                text = text.slice(0, -1);
-                self.text(text + '...');
-                textLength = self.node().getComputedTextLength();
-            }
-        }
-
-*/
-
 
 //svg containers 	
 
 var border= 4;
 var bordercolor = "black";
 			
-	var SVG1 = d3.select('body')
+	var SVG1G = d3.select('body')
 		.append('svg')
 		.attr('width', 1000)
-		.attr('height', 1000)
-		.attr('border', border);
-	var SVG2 = d3.select('body')
-		.append('svg')
-		.attr('width', 1000)
-		.attr('height', 500)
-		.attr('border', border);
-	var SVG3 = d3.select('body')
-		.append('svg')
-		.attr('width', 1000)
-		.attr('height', 500)
-		.attr('border', border);
-	var SVG4 = d3.select('body')
-		.append('svg')
-		.attr('width', 1000)
-		.attr('height', 500)
-		.attr('border', border);
-	var SVG5 = d3.select('body')
-		.append('svg')
-		.attr('width', 1000)
-		.attr('height', 500)
-		.attr('border', border);
+		.attr('height', 600)
+		.attr('transform','scale(0.2)');
 		
+	var SVG1 = SVG1G.append("g")
+	//.attr('transform','scale(0.5)');
+		
+	var SVG2G = d3.select('body')
+		.append('svg')
+		.attr('width', 1070)
+		.attr('height', 270)
+		
+	var SVG2 = SVG2G.append("g")
+	//.attr('transform','scale(0.5)');
+		
+	var SVG5G = d3.select('body')
+		.append('svg')
+		.attr('width', 920)
+		.attr('height', 270)
+		
+	var SVG5 = SVG5G.append("g")
+	//.attr('transform','scale(0.5)');
+	
+	var SVG3G = d3.select('body')
+		.append('svg')
+		.attr('width', 560)
+		.attr('height', 370)
+		
+	var SVG3 = SVG3G.append("g")
+	//.attr('transform','scale(0.5)');
+	
+	var SVG4G = d3.select('body')
+		.append('svg')
+		.attr('width', 560)
+		.attr('height', 370)
+		
+	var SVG4 = SVG4G.append("g")
+	//.attr('transform','scale(0.5)');
 
-var borderpath = SVG1.append('rect')
-		.attr("x", 0)
-		.attr("y", 0)
+var borderpath1 = SVG1.append('rect')
 		.attr("width", 1000)
-		.attr("height", 1000)
+		.attr("height", 600)
 		.style("stroke", bordercolor)
 		.style("fill", "none")
 		.style("stroke-width", border);
-var borderpath = SVG2.append('rect')
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", 1000)
-		.attr("height", 500)
+var borderpath2 = SVG2.append('rect')
+		.attr("width", 1070)
+		.attr("height", 270)
 		.style("stroke", bordercolor)
 		.style("fill", "none")
 		.style("stroke-width", border);
-var borderpath = SVG3.append('rect')
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", 1000)
-		.attr("height", 500)
+var borderpath3 = SVG3.append('rect')
+		.attr("width", 560)
+		.attr("height", 370)
 		.style("stroke", bordercolor)
 		.style("fill", "none")
 		.style("stroke-width", border);
-var borderpath = SVG4.append('rect')
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", 1000)
-		.attr("height", 500)
+var borderpath4 = SVG4.append('rect')
+		.attr("width", 560)
+		.attr("height", 370)
 		.style("stroke", bordercolor)
 		.style("fill", "none")
 		.style("stroke-width", border);
-var borderpath = SVG5.append('rect')
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", 1000)
-		.attr("height", 500)
+var borderpath5 = SVG5.append('rect')
+		.attr("width", 920)
+		.attr("height", 270)
 		.style("stroke", bordercolor)
 		.style("fill", "none")
 		.style("stroke-width", border);
@@ -617,7 +610,6 @@ var countScaleM = d3.scaleLinear()
 		
 	graph1a.append("path")
 		.attr("class", "states")
-		.attr('transform','translate(50,100)')
 		.datum(topojson.feature(us, us.objects.states))
 		.attr("d", path);
 		
@@ -656,6 +648,25 @@ var countScaleM = d3.scaleLinear()
 				return "translate(" + [latlong[0]+45,latlong[1]+95] + ")";})
 		.on('click',function(d) {console.log(d.Count)})
 		
+		// legend
+		SVG1.append('text')
+			.attr("y", 400)
+			.attr("x", 750)
+			.style("text-anchor", "left")
+			.text("Human Infections");
+		SVG1.append('text')
+			.attr("y", 420)
+			.attr("x", 750)
+			.style("text-anchor", "left")
+			.style('fill','red')
+			.text("Avian Infections");
+		SVG1.append('text')
+			.attr("y", 440)
+			.attr("x", 750)
+			.style("text-anchor", "left")
+			.style('fill', 'blue')
+			.text("Non-human Mammalian Infections");
+		
 //Graph//Graph 2: Quantity of Infections
 var graph2a = SVG2.append("g");
 var graph2b = SVG2.append("g");
@@ -667,12 +678,11 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 //Scales for line graph
 	//For line chart
 	var xScale2 = d3.scaleLinear()
-
 		.domain([minCollectionDate,maxEndDate])
 		.range([0,1000]);
 	var yScale2 = d3.scaleLinear()
-		.domain([0,300])
-		.range([300,0]);
+		.domain([0,280])
+		.range([200,0]);
 		
 		//Min Date: Mar 13 2012
 		//Max Date:Mar 2 2014
@@ -699,7 +709,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2a.append('path')
 		.datum(dataset2H)
 		.attr('d', line2)
-		.attr('transform','translate(70,100)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
@@ -707,7 +717,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2b.append('path')
 		.datum(dataset2A)
 		.attr('d', line2)
-		.attr('transform','translate(70,100)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -715,70 +725,48 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2c.append('path')
 		.datum(dataset2M)
 		.attr('d', line2)
-		.attr('transform','translate(70,100)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','blue')
 		.attr('stroke-width',2);
 		
-		SVG2.append('g').attr('transform', 'translate(70, 400)').call(d3.axisBottom(xScale2));
+		SVG2.append('g').attr('transform', 'translate(50, 210)').call(d3.axisBottom(xMonths));
 		SVG2.append('text')
-			.attr("x", 440)
-			.attr("y", 440)
+			.attr("x", 550)
+			.attr("y", 250)
 			.style("text-anchor", "middle")
 			.text("Date");
-		SVG2.append('g').attr('transform', 'translate(65, 100)').call(d3.axisLeft(yScale2));
+		SVG2.append('g').attr('transform', 'translate(50,10)').call(d3.axisLeft(yScale2));
 		SVG2.append('text')
-			.attr("y", 30)
-			.attr("x", -220)
+			.attr("y", 20)
+			.attr("x", -115)
 			.attr("transform", "rotate(-90)")
 			.style("text-anchor", "middle")
 			.text("Quantity of Contagious Infections");
 		// legend
 		SVG2.append('text')
-			.attr("y", 380)
-			.attr("x", 800)
+			.attr("y", 20)
+			.attr("x", 60)
 			.style("text-anchor", "left")
 			.text("Human Infections");
 		SVG2.append('text')
-			.attr("y", 400)
-			.attr("x", 800)
+			.attr("y", 40)
+			.attr("x", 60)
 			.style("text-anchor", "left")
 			.style('fill','red')
 			.text("Avian Infections");
 		SVG2.append('text')
-			.attr("y", 420)
-			.attr("x", 800)
+			.attr("y", 60)
+			.attr("x", 60)
 			.style("text-anchor", "left")
 			.style('fill', 'blue')
-			.text("Mammalian Infections");
-		var d = "This graph is a collection of three overlayed line graphs. This is intended to show ...." 
-		
-
-		SVG2.append('text')
-			.attr('x', 100)
-			.attr('y', 100)
-			.style('text-align', 'justify' )
-			.text("This graphic displays the quantity of active contagious infections over time. Each line represents a different category of animal that <br> can be infected by Influenza.")
-
-	SVG2.append('g').attr('transform', 'translate(50, 1000)').call(d3.axisBottom(xMonths));
-		SVG2.append('text')
-			.attr("x", 525)
-			.attr("y", 1040)
-			.style("text-anchor", "middle")
-			.text("Date");
-		SVG2.append('g').attr('transform', 'translate(50, 800)').call(d3.axisLeft(yScale2));
-		SVG2.append('text')
-			.attr("y", 20)
-			.attr("x", -900)
-			.attr("transform", "rotate(-90)")
-			.style("text-anchor", "middle")
-			.text("Quantity of Contagious Infections")
+			.text("Non-human Mammalian Infections");
 		
   
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
 var dataset3 = graph3Stats(humanData,totalPop)
-var graph3a = SVG2.append("g");
-var graph3b = SVG2.append("g");
+var graph3a = SVG3.append("g");
+var graph3b = SVG3.append("g");
 
 //Scales for line graph
 	//For line chart
@@ -787,7 +775,7 @@ var graph3b = SVG2.append("g");
 		.range([0,500]);
 	var yScale3 = d3.scaleLinear()
 		.domain([0,10])
-		.range([350,0]);
+		.range([300,0]);
 		
 		var xMonths3 = d3.scaleBand()
     .domain(["Apr2012","Jun2012","Sep2012","Nov2012",//2012
@@ -818,7 +806,7 @@ var graph3b = SVG2.append("g");
 		graph3a.append('path')
 		.datum(dataset3)
 		.attr('d', line3a)
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -826,36 +814,36 @@ var graph3b = SVG2.append("g");
 		graph3b.append('path')
 		.datum(dataset3)
 		.attr('d', line3b)
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
 		
-		SVG3.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisBottom(xMonths3));
-		SVG3.append('g').attr('transform', 'translate(600, 1350)').call(d3.axisLeft(yScale3));
+		SVG3.append('g').attr('transform', 'translate(50, 310)').call(d3.axisBottom(xMonths3));
+		SVG3.append('g').attr('transform', 'translate(50, 10)').call(d3.axisLeft(yScale3));
 		SVG3.append('text')
-			.attr("x", 850)
-			.attr("y", 1740)
+			.attr("x", 300)
+			.attr("y", 350)
 			.style("text-anchor", "middle")
 			.text("Date");
 		
 		SVG3.append('text')
-			.attr("y", 570)
-			.attr("x", -1550)
+			.attr("y", 20)
+			.attr("x", -160)
 			.attr("transform", "rotate(-90)")
 			.style("text-anchor", "middle")
 			.text("Percent Infected")	
 			
 		// Legend thing
 		SVG3.append('text')
-			.attr("y", 1400)
-			.attr("x", 950)
+			.attr("y", 50)
+			.attr("x", 400)
 			.style("text-anchor", "middle")
 			.style("fill", "red")
 			.text("Percent of Infected with Symptoms");
 		SVG3.append('text')
-			.attr("y", 1420)
-			.attr("x", 950)
+			.attr("y", 70)
+			.attr("x", 400)
 			.style("text-anchor", "middle")
 			.text("Percent of Population Infected");
 		
@@ -871,7 +859,7 @@ var dataset4 = graph4Stats(humanData)
 		.range([0,500]);
 	var yScale4 = d3.scaleLinear()
 		.domain([0,20])
-		.range([350,0]);
+		.range([300,0]);
 		
 	var xAges = d3.scaleBand()
     .domain(["5-9","15-19","25-29","35-39","45-49",
@@ -898,7 +886,7 @@ var dataset4 = graph4Stats(humanData)
 		graph4a.append('path')
 		.datum(dataset4)
 		.attr('d', line4a)
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -906,7 +894,7 @@ var dataset4 = graph4Stats(humanData)
 		graph4b.append('path')
 		.datum(ageCohorts)
 		.attr('d', line4b)
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
@@ -916,7 +904,7 @@ var dataset4 = graph4Stats(humanData)
 		.data(dataset4)
         .enter()
 		.append('circle')
-        .attr('transform','translate(0,0)')
+        .attr('transform','translate(50,10)')
         .attr('cy',function (d) {
                     return yScale4(d.PopulationPercent);
                     })
@@ -930,7 +918,7 @@ var dataset4 = graph4Stats(humanData)
 		.data(ageCohorts)
         .enter()
 		.append('circle')
-        .attr('transform','translate(0,0)')
+        .attr('transform','translate(50,10)')
         .attr('cy',function (d) {
                     return yScale4(d.Percent*100);
                     })
@@ -940,48 +928,53 @@ var dataset4 = graph4Stats(humanData)
 		.attr('r',4)		
         .attr('fill', 'black')
 		
-		SVG4.append('g').attr('transform', 'translate(50, 1700)').call(d3.axisBottom(xAges));
-		SVG4.append('g').attr('transform', 'translate(50, 1350)').call(d3.axisLeft(yScale4));
+		SVG4.append('g').attr('transform', 'translate(50, 310)').call(d3.axisBottom(xAges));
+		SVG4.append('g').attr('transform', 'translate(50, 10)').call(d3.axisLeft(yScale4));
 		
 		SVG4.append('text')
 			.attr("x", 300)
-			.attr("y", 1740)
+			.attr("y", 350)
 			.style("text-anchor", "middle")
 			.text("Age Group");
 		
 		SVG4.append('text')
 			.attr("y", 20)
-			.attr("x", -1550)
+			.attr("x", -160)
 			.attr("transform", "rotate(-90)")
 			.style("text-anchor", "middle")
 			.text("Percentage (%)")
 			
 		// Legend thing
 		SVG4.append('text')
-			.attr("y", 1400)
+			.attr("y", 50)
 			.attr("x", 400)
 			.style("text-anchor", "middle")
 			.style("fill", "red")
 			.text("Percent of Infected in Age Group");
 		SVG4.append('text')
-			.attr("y", 1420)
+			.attr("y", 70)
 			.attr("x", 400)
 			.style("text-anchor", "middle")
 			.text("Percent of Population in Age Group");
 		
 //Graph//Graph 5: Infections by Strain
+
 var graph5a = SVG5.append("g");
 var graph5b = SVG5.append("g");
 var graph5c = SVG5.append("g");
 var graph5e = SVG5.append("g");
 var graph5f = SVG5.append("g");
 var graph5d = SVG5.append("g");
+
 var barDatasetHS = graph5Stats(sharedHuman) //human shared
 var barDatasetAS = graph5Stats(sharedAvian) // avian shared 
 var barDatasetMS = graph5Stats(sharedMammal) //mammal shared
 var barDatasetHE = graph5Stats(excludeHuman) //human excluding shared
 var barDatasetAE = graph5Stats(excludeAvian) // avian excluding shared
 var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
+
+
+	//Scales
 	var xScale5 = d3.scaleLinear()
 		.domain([0,barDatasetHS.length-1])
 		.range([0,250]);
@@ -995,23 +988,64 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.domain([0,barDatasetME.length-1])
 		.range([0,25]);
 	var yScale5 = d3.scaleLinear()
-		.domain([0,0.7])
+		.domain([0,85])
 		.range([200,0]);
+		
+var strainsS = []
+var strainsHE = []
+var strainsAE = []
+var strainsME = []
+
+var indexS = []
+var indexHE = []
+var indexAE = []
+var indexME = []
+
+barDatasetHS.forEach(function(d){
+	strainsS.push(d.Strain)
+	indexS.push(xScale5(d.Index)+30)
+	})
+
+barDatasetHE.forEach(function(d){
+	strainsHE.push(d.Strain)
+	indexHE.push(xScale5b(d.Index)+10)
+	})
+barDatasetAE.forEach(function(d){
+	strainsAE.push(d.Strain)
+	indexAE.push(xScale5c(d.Index)+10)
+	})
+barDatasetME.forEach(function(d){
+	strainsME.push(d.Strain)
+	indexME.push(xScale5d(d.Index)+10)
+	})
+		
+	var xStrainsS = d3.scaleOrdinal()
+    .domain(strainsS)
+    .range(indexS);	
+	var xStrainsHE = d3.scaleOrdinal()
+    .domain(strainsHE)
+    .range(indexHE);
+	var xStrainsAE = d3.scaleOrdinal()
+    .domain(strainsAE)
+    .range(indexAE);
+	var xStrainsME = d3.scaleOrdinal()
+    .domain(strainsME)
+    .range(indexME);
 	
 	graph5a.selectAll("bar")
 		.data(barDatasetHS)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('x', function (d) { 
 					return xScale5(d.Index);
 					})
 		.attr('y', function (d) { 
-					return yScale5(d.Count/1063);
+					return yScale5((d.Count/sharedHuman.length)*100);
 					})
 		.attr('width', 20)
 		.attr('height', function (d) { 
-					return 200 - yScale5(d.Count/1063);
+					return 200 - yScale5((d.Count/sharedHuman.length)*100);
 					})
 		.attr('fill','black')
 		.on("click", function(d){
@@ -1019,7 +1053,10 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fa = filterStrain(sharedAvian,d.Strain)
 			var fm = filterStrain(sharedMammal,d.Strain)
 			
+			console.log(d.Strain)
+			
 			dispatch.call('graph',this,fh,fa,fm,5)
+			
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
@@ -1048,23 +1085,28 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetAS)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('x', function (d) { 
+		
 					return xScale5(d.Index)+20;
 					})
 		.attr('y', function (d) { 
-					return yScale5(d.Count/1017);
+					return yScale5((d.Count/sharedAvian.length)*100);
 					})
 		.attr('width', 20)
 		.attr('height', function (d) { 
-					return 200 - yScale5(d.Count/1017);
+					return 200 - yScale5((d.Count/sharedAvian.length)*100);
 					})
 		.attr('fill','red')
 		.on("click", function(d){
 			var fh = filterStrain(sharedHuman,d.Strain)
 			var fa = filterStrain(sharedAvian,d.Strain)
 			var fm = filterStrain(sharedMammal,d.Strain)
+			
 			dispatch.call('graph',this,fh,fa,fm,5)
+			
+			console.log(d.Strain)
+			
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
@@ -1092,16 +1134,16 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetMS)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(0,0)')
+		.attr('transform','translate(50,10)')
 		.attr('x', function (d) { 
 					return xScale5(d.Index)+40;
 					})
 		.attr('y', function (d) { 
-					return yScale5(d.Count/1017);
+					return yScale5((d.Count/sharedMammal.length)*100);
 					})
 		.attr('width', 20)
 		.attr('height', function (d) { 
-					return 200 - yScale5(d.Count/1017);
+					return 200 - yScale5((d.Count/sharedMammal.length)*100);
 					})
 		.attr('fill','blue')
 		.on("click", function(d){
@@ -1110,6 +1152,9 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fm = filterStrain(sharedMammal,d.Strain)
 			
 			dispatch.call('graph',this,fh,fa,fm,5)
+			
+			console.log(d.Strain)
+			
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
@@ -1137,16 +1182,16 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetHE)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(600,1400)')
+		.attr('transform','translate(260,10)')
 		.attr('x', function (d) { 
 					return xScale5b(d.Index);
 					})
 		.attr('y', function (d) { 
-					return yScale5(d.Count/1063);
+					return yScale5((d.Count/sharedHuman.length)*100);
 					})
 		.attr('width', 20)
 		.attr('height', function (d) { 
-					return 200 - yScale5(d.Count/1063);
+					return 200 - yScale5((d.Count/sharedHuman.length)*100);
 					})
 		.attr('fill','black')
 		.on("click", function(d){
@@ -1155,6 +1200,9 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fm = filterStrain(excludeMammal,d.Strain)
 			
 			dispatch.call('graph',this,fh,fa,fm,5)
+			
+			console.log(d.Strain)
+			
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
@@ -1162,6 +1210,15 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			.transition()
 			.style('opacity',0.5)
 			graph5c.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5d.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5e.selectAll('rect')
+			.transition()
+			.style('opacity',0.5)
+			graph5f.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
 			d3.select(this)
@@ -1174,16 +1231,16 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetAE)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(600,1300)')
+		.attr('transform','translate(400,10)')
 		.attr('x', function (d) { 
 					return xScale5c(d.Index);
 					})
 		.attr('y', function (d) { 
-					return yScale5(d.Count/1017);
+					return yScale5((d.Count/excludeAvian.length)*100);
 					})
 		.attr('width', 20)
 		.attr('height', function (d) { 
-					return 200 - yScale5(d.Count/1017);
+					return 200 - yScale5((d.Count/excludeAvian.length)*100);
 					})
 		.attr('fill','red')
 		.on("click", function(d){
@@ -1192,6 +1249,9 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fm = filterStrain(excludeMammal,d.Strain)
 
 			dispatch.call('graph',this,fh,fa,fm,5)
+			
+			console.log(d.Strain)
+			
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
@@ -1219,16 +1279,16 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetME)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(600,1100)')
+		.attr('transform','translate(720,10)')
 		.attr('x', function (d) { 
 					return xScale5d(d.Index);
 					})
 		.attr('y', function (d) { 
-					return yScale5(d.Count/1017);
+					return yScale5((d.Count/excludeMammal.length)*100);
 					})
 		.attr('width', 20)
 		.attr('height', function (d) { 
-					return 200 - yScale5(d.Count/1017);
+					return 200 - yScale5((d.Count/excludeMammal.length)*100);
 					})
 		.attr('fill','blue')
 		.on("click", function(d){
@@ -1237,6 +1297,9 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fm = filterStrain(excludeMammal,d.Strain)
 			
 			dispatch.call('graph',this,fh,fa,fm,5)
+			
+			console.log(d.Strain)
+			
 			graph5a.selectAll('rect')
 			.transition()
 			.style('opacity',0.5)
@@ -1260,19 +1323,55 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			.style('opacity',1)
 		})
 		
-		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		var ax1 = SVG5.append('g').attr('transform', 'translate(50, 210)').call(d3.axisBottom(xStrainsS));
+		var ax2 = SVG5.append('g').attr('transform', 'translate(260, 210)').call(d3.axisBottom(xStrainsHE));
+		var ax3 = SVG5.append('g').attr('transform', 'translate(400, 210)').call(d3.axisBottom(xStrainsAE));
+		var ax4 = SVG5.append('g').attr('transform', 'translate(720, 210)').call(d3.axisBottom(xStrainsME));
+		var ax5 = SVG5.append('g').attr('transform', 'translate(50, 10)').call(d3.axisLeft(yScale5));
 		
-		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+	ax1.selectAll("text")
+    .attr("transform", "rotate(-30)")
+	ax2.selectAll("text")
+    .attr("transform", "rotate(-30)")
+	ax3.selectAll("text")
+    .attr("transform", "rotate(-30)")
+	ax4.selectAll("text")
+    .attr("transform", "rotate(-30)")
+	
+	SVG5.append('text')
+			.attr("x", 450)
+			.attr("y", 250)
+			.style("text-anchor", "middle")
+			.text("Strains");
 		
-		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
-		
-		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
-		
-		
+		SVG5.append('text')
+			.attr("y", 20)
+			.attr("x", -110)
+			.attr("transform", "rotate(-90)")
+			.style("text-anchor", "middle")
+			.text("Percentage (%)")
+			
+		// Legend thing
+		SVG5.append('text')
+			.attr("y", 50)
+			.attr("x", 600)
+			.style("text-anchor", "left")
+			.style("fill", "black")
+			.text("Human Strain");
+		SVG5.append('text')
+			.attr("y", 70)
+			.attr("x", 600)
+			.style("text-anchor", "left")
+			.style("fill", "red")
+			.text("Avian Strains");
+		SVG5.append('text')
+			.attr("y", 90)
+			.attr("x", 600)
+			.style("fill", "blue")
+			.style("text-anchor", "left")
+			.text("Non-human Mammalian Strains");
+
+
 		
 		
 		
