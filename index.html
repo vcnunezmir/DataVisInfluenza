@@ -404,7 +404,7 @@ var graph2Stats = function(d) {
       }
       twoData.push({Date: currentDate, Value: count });
     }
-	
+
 	return twoData;
 }
 //Stats//Graph 3: Percent Infected compared to Symptomatic Infection
@@ -499,18 +499,106 @@ var graph5Stats = function (d) {
 	return strainData;
 }
 //*************************************GRAPHS****************************************************
-//svg container				
-	var SVG = d3.select('body')
+// function for justifying text 
+/*
+    function wrap( d ) {
+            var self = d3.select(this),
+                textLength = self.node().getComputedTextLength(),
+                text = self.text();
+            while ( ( textLength > self.attr('width') )&& text.length > 0) {
+                text = text.slice(0, -1);
+                self.text(text + '...');
+                textLength = self.node().getComputedTextLength();
+            }
+        }
+
+*/
+
+
+//svg containers 	
+
+var border= 4;
+var bordercolor = "black";
+			
+	var SVG1 = d3.select('body')
 		.append('svg')
-		.attr('width', 2000)
-		.attr('height', 5000)
+		.attr('width', 1000)
+		.attr('height', 1000)
+		.attr('border', border);
+	var SVG2 = d3.select('body')
+		.append('svg')
+		.attr('width', 1000)
+		.attr('height', 500)
+		.attr('border', border);
+	var SVG3 = d3.select('body')
+		.append('svg')
+		.attr('width', 1000)
+		.attr('height', 500)
+		.attr('border', border);
+	var SVG4 = d3.select('body')
+		.append('svg')
+		.attr('width', 1000)
+		.attr('height', 500)
+		.attr('border', border);
+	var SVG5 = d3.select('body')
+		.append('svg')
+		.attr('width', 1000)
+		.attr('height', 500)
+		.attr('border', border);
+		
+
+var borderpath = SVG1.append('rect')
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 1000)
+		.attr("height", 1000)
+		.style("stroke", bordercolor)
+		.style("fill", "none")
+		.style("stroke-width", border);
+var borderpath = SVG2.append('rect')
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 1000)
+		.attr("height", 500)
+		.style("stroke", bordercolor)
+		.style("fill", "none")
+		.style("stroke-width", border);
+var borderpath = SVG3.append('rect')
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 1000)
+		.attr("height", 500)
+		.style("stroke", bordercolor)
+		.style("fill", "none")
+		.style("stroke-width", border);
+var borderpath = SVG4.append('rect')
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 1000)
+		.attr("height", 500)
+		.style("stroke", bordercolor)
+		.style("fill", "none")
+		.style("stroke-width", border);
+var borderpath = SVG5.append('rect')
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 1000)
+		.attr("height", 500)
+		.style("stroke", bordercolor)
+		.style("fill", "none")
+		.style("stroke-width", border);
+		
+
 //Graph//Graph 1: The Map...	
-var graph1a = SVG.append("g");
-var graph1b = SVG.append("g");
-var graph1c = SVG.append("g");
+
+var graph1a = SVG1.append("g");
+var graph1b = SVG1.append("g");
+var graph1c = SVG1.append("g");
+
 var dataset1H = graph1Stats(humanData,minCollectionDate,maxEndDate)
 var dataset1A = graph1Stats(avianData,minCollectionDate,maxEndDate)
 var dataset1M = graph1Stats(mammalData,minCollectionDate,maxEndDate)
+
 dataset1H.forEach(function(d){
 	d.Count = (d.Count/d.Population)*100000;
 	})
@@ -569,9 +657,9 @@ var countScaleM = d3.scaleLinear()
 		.on('click',function(d) {console.log(d.Count)})
 		
 //Graph//Graph 2: Quantity of Infections
-var graph2a = SVG.append("g");
-var graph2b = SVG.append("g");
-var graph2c = SVG.append("g");
+var graph2a = SVG2.append("g");
+var graph2b = SVG2.append("g");
+var graph2c = SVG2.append("g");
 var dataset2H = graph2Stats(humanData,avianData,mammalData)
 var dataset2A = graph2Stats(avianData,humanData,mammalData)
 var dataset2M = graph2Stats(mammalData,humanData,avianData)
@@ -579,11 +667,12 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 //Scales for line graph
 	//For line chart
 	var xScale2 = d3.scaleLinear()
+
 		.domain([minCollectionDate,maxEndDate])
 		.range([0,1000]);
 	var yScale2 = d3.scaleLinear()
-		.domain([0,280])
-		.range([200,0]);
+		.domain([0,300])
+		.range([300,0]);
 		
 		//Min Date: Mar 13 2012
 		//Max Date:Mar 2 2014
@@ -596,6 +685,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
     .range([0, 1000]);	
 		
 		console.log
+
 	var line2 = d3.line()
 		
 		.x(function(d) { 
@@ -609,7 +699,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2a.append('path')
 		.datum(dataset2H)
 		.attr('d', line2)
-		.attr('transform','translate(50,800)')
+		.attr('transform','translate(70,100)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
@@ -617,7 +707,7 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2b.append('path')
 		.datum(dataset2A)
 		.attr('d', line2)
-		.attr('transform','translate(50,800)')
+		.attr('transform','translate(70,100)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -625,30 +715,70 @@ var dataset2M = graph2Stats(mammalData,humanData,avianData)
 		graph2c.append('path')
 		.datum(dataset2M)
 		.attr('d', line2)
-		.attr('transform','translate(50,800)')
+		.attr('transform','translate(70,100)')
 		.attr('fill','none')
 		.attr('stroke','blue')
-		.attr('stroke-width',2)
+		.attr('stroke-width',2);
 		
-	SVG.append('g').attr('transform', 'translate(50, 1000)').call(d3.axisBottom(xMonths));
-		SVG.append('text')
+		SVG2.append('g').attr('transform', 'translate(70, 400)').call(d3.axisBottom(xScale2));
+		SVG2.append('text')
+			.attr("x", 440)
+			.attr("y", 440)
+			.style("text-anchor", "middle")
+			.text("Date");
+		SVG2.append('g').attr('transform', 'translate(65, 100)').call(d3.axisLeft(yScale2));
+		SVG2.append('text')
+			.attr("y", 30)
+			.attr("x", -220)
+			.attr("transform", "rotate(-90)")
+			.style("text-anchor", "middle")
+			.text("Quantity of Contagious Infections");
+		// legend
+		SVG2.append('text')
+			.attr("y", 380)
+			.attr("x", 800)
+			.style("text-anchor", "left")
+			.text("Human Infections");
+		SVG2.append('text')
+			.attr("y", 400)
+			.attr("x", 800)
+			.style("text-anchor", "left")
+			.style('fill','red')
+			.text("Avian Infections");
+		SVG2.append('text')
+			.attr("y", 420)
+			.attr("x", 800)
+			.style("text-anchor", "left")
+			.style('fill', 'blue')
+			.text("Mammalian Infections");
+		var d = "This graph is a collection of three overlayed line graphs. This is intended to show ...." 
+		
+
+		SVG2.append('text')
+			.attr('x', 100)
+			.attr('y', 100)
+			.style('text-align', 'justify' )
+			.text("This graphic displays the quantity of active contagious infections over time. Each line represents a different category of animal that <br> can be infected by Influenza.")
+
+	SVG2.append('g').attr('transform', 'translate(50, 1000)').call(d3.axisBottom(xMonths));
+		SVG2.append('text')
 			.attr("x", 525)
 			.attr("y", 1040)
 			.style("text-anchor", "middle")
 			.text("Date");
-		SVG.append('g').attr('transform', 'translate(50, 800)').call(d3.axisLeft(yScale2));
-		SVG.append('text')
+		SVG2.append('g').attr('transform', 'translate(50, 800)').call(d3.axisLeft(yScale2));
+		SVG2.append('text')
 			.attr("y", 20)
 			.attr("x", -900)
 			.attr("transform", "rotate(-90)")
 			.style("text-anchor", "middle")
 			.text("Quantity of Contagious Infections")
 		
+  
 //Graph//Graph 3: Percent Infected compared to Symptomatic Infection
 var dataset3 = graph3Stats(humanData,totalPop)
-var graph3a = SVG.append("g");
-var graph3b = SVG.append("g");
-
+var graph3a = SVG2.append("g");
+var graph3b = SVG2.append("g");
 
 //Scales for line graph
 	//For line chart
@@ -688,7 +818,7 @@ var graph3b = SVG.append("g");
 		graph3a.append('path')
 		.datum(dataset3)
 		.attr('d', line3a)
-		.attr('transform','translate(600,1350)')
+		.attr('transform','translate(0,0)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -696,20 +826,20 @@ var graph3b = SVG.append("g");
 		graph3b.append('path')
 		.datum(dataset3)
 		.attr('d', line3b)
-		.attr('transform','translate(600,1350)')
+		.attr('transform','translate(0,0)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
 		
-		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisBottom(xMonths3));
-		SVG.append('g').attr('transform', 'translate(600, 1350)').call(d3.axisLeft(yScale3));
-		SVG.append('text')
+		SVG3.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisBottom(xMonths3));
+		SVG3.append('g').attr('transform', 'translate(600, 1350)').call(d3.axisLeft(yScale3));
+		SVG3.append('text')
 			.attr("x", 850)
 			.attr("y", 1740)
 			.style("text-anchor", "middle")
 			.text("Date");
 		
-		SVG.append('text')
+		SVG3.append('text')
 			.attr("y", 570)
 			.attr("x", -1550)
 			.attr("transform", "rotate(-90)")
@@ -717,21 +847,21 @@ var graph3b = SVG.append("g");
 			.text("Percent Infected")	
 			
 		// Legend thing
-		SVG.append('text')
+		SVG3.append('text')
 			.attr("y", 1400)
 			.attr("x", 950)
 			.style("text-anchor", "middle")
 			.style("fill", "red")
 			.text("Percent of Infected with Symptoms");
-		SVG.append('text')
+		SVG3.append('text')
 			.attr("y", 1420)
 			.attr("x", 950)
 			.style("text-anchor", "middle")
 			.text("Percent of Population Infected");
 		
 //Graph//Graph 4: Percent of Infected over Age
-var graph4a = SVG.append("g");
-var graph4b = SVG.append("g");
+var graph4a = SVG4.append("g");
+var graph4b = SVG4.append("g");
 var dataset4 = graph4Stats(humanData)
 
 //Scales for line graph
@@ -768,7 +898,7 @@ var dataset4 = graph4Stats(humanData)
 		graph4a.append('path')
 		.datum(dataset4)
 		.attr('d', line4a)
-		.attr('transform','translate(50,1350)')
+		.attr('transform','translate(0,0)')
 		.attr('fill','none')
 		.attr('stroke','red')
 		.attr('stroke-width',2)
@@ -776,7 +906,7 @@ var dataset4 = graph4Stats(humanData)
 		graph4b.append('path')
 		.datum(ageCohorts)
 		.attr('d', line4b)
-		.attr('transform','translate(50,1350)')
+		.attr('transform','translate(0,0)')
 		.attr('fill','none')
 		.attr('stroke','black')
 		.attr('stroke-width',2)
@@ -786,7 +916,7 @@ var dataset4 = graph4Stats(humanData)
 		.data(dataset4)
         .enter()
 		.append('circle')
-        .attr('transform','translate(50,1350)')
+        .attr('transform','translate(0,0)')
         .attr('cy',function (d) {
                     return yScale4(d.PopulationPercent);
                     })
@@ -800,7 +930,7 @@ var dataset4 = graph4Stats(humanData)
 		.data(ageCohorts)
         .enter()
 		.append('circle')
-        .attr('transform','translate(50,1350)')
+        .attr('transform','translate(0,0)')
         .attr('cy',function (d) {
                     return yScale4(d.Percent*100);
                     })
@@ -810,16 +940,16 @@ var dataset4 = graph4Stats(humanData)
 		.attr('r',4)		
         .attr('fill', 'black')
 		
-		SVG.append('g').attr('transform', 'translate(50, 1700)').call(d3.axisBottom(xAges));
-		SVG.append('g').attr('transform', 'translate(50, 1350)').call(d3.axisLeft(yScale4));
+		SVG4.append('g').attr('transform', 'translate(50, 1700)').call(d3.axisBottom(xAges));
+		SVG4.append('g').attr('transform', 'translate(50, 1350)').call(d3.axisLeft(yScale4));
 		
-		SVG.append('text')
+		SVG4.append('text')
 			.attr("x", 300)
 			.attr("y", 1740)
 			.style("text-anchor", "middle")
 			.text("Age Group");
 		
-		SVG.append('text')
+		SVG4.append('text')
 			.attr("y", 20)
 			.attr("x", -1550)
 			.attr("transform", "rotate(-90)")
@@ -827,25 +957,25 @@ var dataset4 = graph4Stats(humanData)
 			.text("Percentage (%)")
 			
 		// Legend thing
-		SVG.append('text')
+		SVG4.append('text')
 			.attr("y", 1400)
 			.attr("x", 400)
 			.style("text-anchor", "middle")
 			.style("fill", "red")
 			.text("Percent of Infected in Age Group");
-		SVG.append('text')
+		SVG4.append('text')
 			.attr("y", 1420)
 			.attr("x", 400)
 			.style("text-anchor", "middle")
 			.text("Percent of Population in Age Group");
 		
 //Graph//Graph 5: Infections by Strain
-var graph5a = SVG.append("g");
-var graph5b = SVG.append("g");
-var graph5c = SVG.append("g");
-var graph5e = SVG.append("g");
-var graph5f = SVG.append("g");
-var graph5d = SVG.append("g");
+var graph5a = SVG5.append("g");
+var graph5b = SVG5.append("g");
+var graph5c = SVG5.append("g");
+var graph5e = SVG5.append("g");
+var graph5f = SVG5.append("g");
+var graph5d = SVG5.append("g");
 var barDatasetHS = graph5Stats(sharedHuman) //human shared
 var barDatasetAS = graph5Stats(sharedAvian) // avian shared 
 var barDatasetMS = graph5Stats(sharedMammal) //mammal shared
@@ -872,7 +1002,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetHS)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(600,1500)')
+		.attr('transform','translate(0,0)')
 		.attr('x', function (d) { 
 					return xScale5(d.Index);
 					})
@@ -888,7 +1018,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fh = filterStrain(sharedHuman,d.Strain)
 			var fa = filterStrain(sharedAvian,d.Strain)
 			var fm = filterStrain(sharedMammal,d.Strain)
-			console.log(d.Strain+"H")
+			
 			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
@@ -918,7 +1048,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetAS)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(600,1500)')
+		.attr('transform','translate(0,0)')
 		.attr('x', function (d) { 
 					return xScale5(d.Index)+20;
 					})
@@ -934,7 +1064,6 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fh = filterStrain(sharedHuman,d.Strain)
 			var fa = filterStrain(sharedAvian,d.Strain)
 			var fm = filterStrain(sharedMammal,d.Strain)
-			console.log(d.Strain+"A")
 			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
@@ -963,7 +1092,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 		.data(barDatasetMS)
 		.enter()
 		.append('rect')
-		.attr('transform','translate(600,1500)')
+		.attr('transform','translate(0,0)')
 		.attr('x', function (d) { 
 					return xScale5(d.Index)+40;
 					})
@@ -979,7 +1108,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fh = filterStrain(sharedHuman,d.Strain)
 			var fa = filterStrain(sharedAvian,d.Strain)
 			var fm = filterStrain(sharedMammal,d.Strain)
-			console.log(d.Strain+"A")
+			
 			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
@@ -1024,7 +1153,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fh = filterStrain(excludeHuman,d.Strain)
 			var fa = filterStrain(excludeAvian,d.Strain)
 			var fm = filterStrain(excludeMammal,d.Strain)
-			console.log(d.Strain+"H")
+			
 			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
@@ -1061,7 +1190,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fh = filterStrain(excludeHuman,d.Strain)
 			var fa = filterStrain(excludeAvian,d.Strain)
 			var fm = filterStrain(excludeMammal,d.Strain)
-			console.log(d.Strain+"A")
+
 			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
@@ -1106,7 +1235,7 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			var fh = filterStrain(excludeHuman,d.Strain)
 			var fa = filterStrain(excludeAvian,d.Strain)
 			var fm = filterStrain(excludeMammal,d.Strain)
-			console.log(d.Strain+"A")
+			
 			dispatch.call('graph',this,fh,fa,fm,5)
 			graph5a.selectAll('rect')
 			.transition()
@@ -1131,17 +1260,17 @@ var barDatasetME = graph5Stats(excludeMammal)// mammal excluding shared
 			.style('opacity',1)
 		})
 		
-		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
 		
-		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
 		
-		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
 		
-		SVG.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
-		SVG.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1900)').call(d3.axisBottom(xScale5));
+		SVG5.append('g').attr('transform', 'translate(600, 1700)').call(d3.axisLeft(yScale5));
 		
 		
 		
@@ -1210,7 +1339,7 @@ var datasetM = graph2Stats(filteredM,filteredH,filteredA)
 //Dispatch//Graph 5: Infections by Strain	
 dispatch.on('graph.five', function(filteredH,filteredA,filteredM,clicked){
 if (clicked !== 5){
-console.log('here')
+
 var datasetH = graph5Stats(filteredH)
 var datasetA = graph5Stats(filteredA)
 var datasetM = graph5Stats(filteredM)
